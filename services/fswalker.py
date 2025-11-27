@@ -1,19 +1,24 @@
 import os
 
-def read_folder(path):
-    items = []
+def read_folder(root_path, relative=""):
+    structure = []
 
-    for item in sorted(os.listdir(path)):
-        full = os.path.join(path, item)
-
-        if os.path.isdir(full):
-            # Папка → ["имя_папки", [...содержимое...]]
-            items.append([item, read_folder(full)])
+    for name in sorted(os.listdir(root_path)):
+        abs_path = os.path.join(root_path, name)
+        rel_path = os.path.join(relative, name)
+        if os.path.isdir(abs_path):
+            structure.append({
+                "name": name,
+                "fullpath": rel_path.replace("\\", "/"),
+                "children": read_folder(abs_path, rel_path)
+            })
         else:
-            # Файл → "имя_файла"
-            items.append(item)
+            structure.append({
+                "name": name,
+                "fullpath": rel_path.replace("\\", "/"),
+                "children": []})
+    return structure
 
-    return items
 
 def print_tree(items, level=0):
     prefix = "  " * level  # -, --, ---, ---- ...
