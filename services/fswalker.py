@@ -19,7 +19,7 @@ def read_folder(root_path, relative=""):
                 "children": []})
     return structure
 
-
+# View to the console tree structure for testing
 def print_tree(items, level=0):
     prefix = "  " * level  # -, --, ---, ---- ...
 
