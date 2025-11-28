@@ -1,0 +1,178 @@
+/* ===========================
+   BASE LAYOUT
+=========================== */
+
+body {
+    margin: 0;
+    font-family: "Segoe UI", sans-serif;
+    overflow: hidden;
+    color: var(--sidebar-text) !important;
+}
+
+#main {
+    display: flex;
+    height: calc(100vh - 48px);
+    padding-top: 32px;
+}
+
+/* ===========================
+   HEADER (breadcrumbs + кнопки)
+=========================== */
+
+#top-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 48px;
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+    gap: 20px;
+
+    padding: 0 15px;
+
+    z-index: 10000;
+
+    background-color: var(--header-bg);
+    border-bottom: 1px solid var(--header-border);
+}
+
+#breadcrumbs {
+    flex-grow: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#font-controls button {
+    padding: 3px 8px;
+    font-size: 14px;
+}
+
+#theme-toggle {
+    font-size: 22px;
+    cursor: pointer;
+}
+
+/* LIGHT + DARK THEMES */
+
+body.theme-light {
+    --header-bg: #ffffff;
+    --header-border: #cccccc;
+    --sidebar-bg: #f7f7f7;
+    --sidebar-text: #222;
+}
+
+body.theme-dark {
+    --header-bg: #1e1f22;
+    --header-border: #333333;
+    --sidebar-bg: #161718;
+    --sidebar-text: #e5e5e5 !important;
+}
+
+
+/* ===========================
+   SIDEBAR
+=========================== */
+
+.sidebar {
+    width: 320px;
+    overflow-y: auto;
+    background-color: var(--sidebar-bg);
+    color: var(--sidebar-text);
+    padding: 10px;
+    border-right: 1px solid var(--header-border);
+}
+
+.sidebar ul {
+    list-style: none;
+    padding-left: 15px;
+    margin: 0;
+}
+
+.folder, .file {
+    cursor: pointer;
+    margin: 3px 0;
+}
+
+.hidden {
+    display: none;
+}
+
+.file.active {
+    background: rgba(0,0,0,0.15);
+    border-radius: 4px;
+}
+
+/* ===========================
+   IFRAME AREA
+=========================== */
+
+#viewer {
+    flex-grow: 1;
+    height: calc(100vh - 48px);
+    border: none;
+}
+
+/* ===========================
+   CONTENT PAGE (в iframe)
+=========================== */
+
+.book-page.theme-light {
+    background: #ffffff !important;
+    color: #000000 !important;
+}
+
+.book-page.theme-dark {
+    background: #1e1f22 !important;
+    color: #e5e5e5 !important;
+}
+
+.book-page {
+    padding: 25px !important;
+    font-size: 18px !important;
+    line-height: 1.7;
+}
+
+.book-page img {
+    max-width: 100% !important;
+    height: auto !important;
+    margin: 15px 0;
+}
+
+
+
+
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+#main {
+    display: flex;
+    height: calc(100vh - 60px); /* мінус висота хедера */
+}
+
+iframe#viewer {
+    flex-grow: 1;
+    border: none;
+    height: 100%;
+    width: 100%;
+    overflow: auto;
+}
+
+/* Footer always at bottom */
+footer {
+    flex-shrink: 0;
+    height: 40px;
+    background: var(--bg-footer, #ddd);
+    text-align: center;
+    line-height: 40px;
+}
+
+/* Якщо темна тема */
+body.dark footer {
+    background: #222;
+    color: #eee;
+}

@@ -1,0 +1,53 @@
+/* базова структура */
+.book-page {
+    padding: 20px !important;
+    font-family: "Segoe UI", sans-serif !important;
+    line-height: 1.7 !important;
+}
+
+/* ТЕМНА ТЕМА */
+.theme-dark.book-page {
+    background: #1d1f21 !important;
+    color: #e2e2e2 !important;
+}
+
+/* СВІТЛА ТЕМА */
+.theme-light.book-page {
+    background: white !important;
+    color: #111 !important;
+}
+
+/* Типографіка */
+.book-page p {
+    font-size: 20px !important;
+}
+
+.book-page h1 {
+    font-size: 32px !important;
+}
+
+.book-page h2 {
+    font-size: 28px !important;
+}
+
+.book-page h3 {
+    font-size: 24px !important;
+}
+
+/* Зображення */
+.book-page img {
+    max-width: 100% !important;
+    height: auto !important;
+    margin: 20px 0;
+}
+
+/* Таблиці */
+.book-page table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+}
+
+.book-page td, .book-page th {
+    padding: 10px;
+    border: 1px solid #444 !important;
+}

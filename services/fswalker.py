@@ -1,22 +1,31 @@
 import os
 
+
 def read_folder(root_path, relative=""):
     structure = []
 
     for name in sorted(os.listdir(root_path)):
+
+        # Пропускаємо data
+        if name.lower() == "data":
+            continue
+
         abs_path = os.path.join(root_path, name)
-        rel_path = os.path.join(relative, name)
+        rel_path = os.path.join(relative, name).replace("\\", "/")
+
         if os.path.isdir(abs_path):
             structure.append({
                 "name": name,
-                "fullpath": rel_path.replace("\\", "/"),
+                "fullpath": rel_path,
                 "children": read_folder(abs_path, rel_path)
             })
         else:
             structure.append({
                 "name": name,
-                "fullpath": rel_path.replace("\\", "/"),
-                "children": []})
+                "fullpath": rel_path,
+                "children": []
+            })
+
     return structure
 
 # View to the console tree structure for testing

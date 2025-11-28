@@ -1,27 +1,29 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Book Reader</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
-</head>
 <li>
-    {% if item.children %}
-        <div class="folder">📁 {{ item.name }}</div>
-        <ul class="hidden level">
+
+    {% if item.children|length > 0 %}
+
+        <div class="folder" data-name="{{ item.name }}">
+            📁 {{ item.name }}
+        </div>
+
+        <ul class="hidden">
             {% for child in item.children %}
                 {% with item=child %}
                     {% include "tree_node.html" %}
                 {% endwith %}
             {% endfor %}
         </ul>
+
     {% else %}
-        <div class="file"
-            data-file="{{ url_for('static', filename='books/' + item.fullpath) }}">
-           📄 {{ item.name }}
-        </div>
+
+        {% if item.name.endswith(".html") %}
+            <div class="file"
+                 data-file="{{ url_for('static', filename='books/' ~ item.fullpath) }}"
+                 data-path="{{ item.fullpath }}">
+                📄 {{ item.name }}
+            </div>
+        {% endif %}
+
     {% endif %}
+
 </li>
-</body>
-</html>
