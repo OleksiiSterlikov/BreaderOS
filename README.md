@@ -32,10 +32,10 @@
 
 
 ## **Technologies:**
-### The following were used to create the application: Python, Flask
+### The following were used to create the application: Python, Flask, JavaScript
 
 ## **Технології:**
-### Для створення застосунку використовались: Python, Flask
+### Для створення застосунку використовались: Python, Flask, JavaScript
 
 
 ## **Developers:**
