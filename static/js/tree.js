@@ -1,5 +1,5 @@
 /* ===========================
-   ACCORDION: close SIBLINGS
+   CLOSE SIBLINGS
 =========================== */
 function closeSiblings(currentUl) {
     const parentLi = currentUl.parentNode;
@@ -11,43 +11,39 @@ function closeSiblings(currentUl) {
 }
 
 /* ===========================
-   FOLDER CLICK (розгортання)
+   MAIN
 =========================== */
 document.addEventListener("DOMContentLoaded", () => {
 
+    /* ==== FOLDER CLICK ==== */
     document.querySelectorAll(".folder").forEach(folder => {
         folder.addEventListener("click", () => {
             const ul = folder.parentNode.querySelector("ul");
             if (!ul) return;
 
             const wasHidden = ul.classList.contains("hidden");
-
             closeSiblings(ul);
             ul.classList.toggle("hidden", !wasHidden);
         });
     });
 
-    /* ===========================
-       CLICK ON FILE (load HTML)
-    ============================ */
-
+    /* ==== FILE CLICK ==== */
     document.querySelectorAll(".file").forEach(file => {
         file.addEventListener("click", () => {
-
-            const src = file.dataset.file;
+    
             const iframe = document.getElementById("viewer");
-
+            const src = "/book/" + file.dataset.path;   // <<< ВАЖЛИВО!
+            iframe.src = src;
+    
             document.querySelectorAll(".file").forEach(f => f.classList.remove("active"));
             file.classList.add("active");
-
+    
             document.getElementById("breadcrumbs").textContent = file.dataset.path;
-
-            iframe.src = src;
-
+    
             iframe.onload = () => {
                 const doc = iframe.contentDocument;
                 if (!doc) return;
-
+    
                 doc.body.classList.add("book-page");
                 applyThemeToIframe();
                 applyFontScale(doc);
@@ -55,9 +51,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    /* ===========================
-       THEME TOGGLE
-    ============================ */
+    /* ==== THEME TOGGLE ==== */
     const themeToggle = document.getElementById("theme-toggle");
 
     themeToggle.addEventListener("click", () => {
@@ -87,11 +81,9 @@ function applyThemeToIframe() {
 
     if (!doc) return;
 
-    // Видаляємо старий стиль, якщо був
     let oldStyle = doc.getElementById("dark-style");
     if (oldStyle) oldStyle.remove();
 
-    // Створюємо <style> у iframe
     const style = doc.createElement("style");
     style.id = "dark-style";
 
@@ -123,13 +115,11 @@ function applyThemeToIframe() {
         `;
     }
 
-    // Додаємо стиль у iframe
     doc.head.appendChild(style);
 }
 
-
 /* ===========================
-   FONT SIZE CONTROL
+   FONT CONTROL
 =========================== */
 let fontScale = 1.0;
 

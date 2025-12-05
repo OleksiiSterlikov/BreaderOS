@@ -1,5 +1,6 @@
 <li>
 
+    {# ==== ПАПКА ==== #}
     {% if item.children|length > 0 %}
 
         <div class="folder" data-name="{{ item.name }}">
@@ -14,16 +15,15 @@
             {% endfor %}
         </ul>
 
+    {# ==== ФАЙЛ ==== #}
     {% else %}
 
         {% if item.name.endswith(".html") %}
             <div class="file"
-                 data-file="{{ url_for('static', filename='books/' ~ item.fullpath) }}"
                  data-path="{{ item.fullpath }}">
                 📄 {{ item.name }}
             </div>
         {% endif %}
 
     {% endif %}
-
 </li>
