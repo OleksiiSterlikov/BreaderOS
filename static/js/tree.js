@@ -11,28 +11,79 @@ function closeSiblings(currentUl) {
 }
 
 /* ===========================
-   MAIN
+   CREATE NODE (HTML)
 =========================== */
-document.addEventListener("DOMContentLoaded", () => {
+function createNode(item) {
+    const li = document.createElement("li");
 
-    /* ==== FOLDER CLICK ==== */
-    document.querySelectorAll(".folder").forEach(folder => {
-        folder.addEventListener("click", () => {
+    if (item.is_dir) {
+        li.innerHTML = `
+            <div class="folder" data-path="${item.fullpath}">${item.name}</div>
+            <ul class="hidden" id="node-${item.fullpath.replace(/\//g, '_')}"></ul>
+        `;
+    } else {
+        li.innerHTML = `
+            <div class="file"
+                 data-file="/book/${item.fullpath}"
+                 data-path="${item.fullpath}">
+                📄 ${item.name}
+            </div>
+        `;
+    }
+
+    return li;
+}
+
+/* ===========================
+   LAZY LOAD FOLDER
+=========================== */
+async function loadFolder(ul, path) {
+    ul.innerHTML = `<li>Loading...</li>`; // temporary
+
+    const res = await fetch(`/api/folder?path=${encodeURIComponent(path)}`);
+    const items = await res.json();
+
+    ul.innerHTML = "";
+    items.forEach(item => {
+        ul.appendChild(createNode(item));
+    });
+
+    attachHandlers(ul); // bind events to new nodes
+}
+
+/* ===========================
+   ATTACH EVENT HANDLERS
+=========================== */
+function attachHandlers(rootElement) {
+
+    /* ---- FOLDER CLICK ---- */
+    rootElement.querySelectorAll(".folder").forEach(folder => {
+        folder.onclick = async () => {
+
+            const path = folder.dataset.path;
             const ul = folder.parentNode.querySelector("ul");
+
             if (!ul) return;
 
             const wasHidden = ul.classList.contains("hidden");
+
             closeSiblings(ul);
+
+            // lazy-load only when first open
+            if (ul.dataset.loaded !== "true") {
+                await loadFolder(ul, path);
+                ul.dataset.loaded = "true";
+            }
+
             ul.classList.toggle("hidden", !wasHidden);
-        });
+        };
     });
 
-    /* ==== FILE CLICK ==== */
-    document.querySelectorAll(".file").forEach(file => {
-        file.addEventListener("click", () => {
-
+    /* ---- FILE CLICK ---- */
+    rootElement.querySelectorAll(".file").forEach(file => {
+        file.onclick = () => {
             const iframe = document.getElementById("viewer");
-            const src = "/book/" + file.dataset.path;   // <<< ВАЖЛИВО!
+            const src = "/book/" + file.dataset.path;
             iframe.src = src;
 
             document.querySelectorAll(".file").forEach(f => f.classList.remove("active"));
@@ -44,45 +95,25 @@ document.addEventListener("DOMContentLoaded", () => {
                 const doc = iframe.contentDocument;
                 if (!doc) return;
 
-                // 🔥 Видалити всі CSP заголовки
+                // Remove restrictive CSP
                 doc.querySelectorAll('meta[http-equiv="Content-Security-Policy"]').forEach(el => el.remove());
 
-                // 🔥 Виправити відео-елементи
+                // Fix video relative paths
                 doc.querySelectorAll("video source").forEach(src => {
                     let url = src.getAttribute("src");
                     if (!url.startsWith("/book/")) {
-                        src.setAttribute("src", "/book/" + doc.baseURI.split("/book/")[1].replace(/[^\/]+$/, "") + url);
+                        const base = "/book/" + file.dataset.path.replace(/[^\/]+$/, "");
+                        src.setAttribute("src", base + url);
                     }
                 });
 
-                // Далі твій код
                 doc.body.classList.add("book-page");
                 applyThemeToIframe();
                 applyFontScale(doc);
             };
-        });
+        };
     });
-
-    /* ==== THEME TOGGLE ==== */
-    const themeToggle = document.getElementById("theme-toggle");
-
-    themeToggle.addEventListener("click", () => {
-        const body = document.body;
-
-        if (body.classList.contains("theme-dark")) {
-            body.classList.remove("theme-dark");
-            body.classList.add("theme-light");
-            themeToggle.textContent = "🌙";
-        } else {
-            body.classList.remove("theme-light");
-            body.classList.add("theme-dark");
-            themeToggle.textContent = "☀️";
-        }
-
-        applyThemeToIframe();
-    });
-
-});
+}
 
 /* ===========================
    APPLY THEME TO IFRAME
@@ -144,7 +175,9 @@ document.getElementById("font-dec").addEventListener("click", () => {
     fontScale = Math.max(0.6, fontScale - 0.1);
     applyFontScale();
 });
-
+/* ===========================
+   CHANGE FONT SIZE
+=========================== */
 function applyFontScale(docOverride = null) {
     const iframe = document.getElementById("viewer");
     const doc = docOverride || iframe.contentDocument;
@@ -153,3 +186,44 @@ function applyFontScale(docOverride = null) {
 
     doc.body.style.fontSize = (18 * fontScale) + "px";
 }
+
+/* ===========================
+   THEME COLOR
+=========================== */
+function attachGlobalControls() {
+    const themeToggle = document.getElementById("theme-toggle");
+    if (themeToggle) {
+        themeToggle.onclick = () => {
+            const body = document.body;
+
+            if (body.classList.contains("theme-dark")) {
+                body.classList.remove("theme-dark");
+                body.classList.add("theme-light");
+                themeToggle.textContent = "🌙";
+            } else {
+                body.classList.remove("theme-light");
+                body.classList.add("theme-dark");
+                themeToggle.textContent = "☀️";
+            }
+            applyThemeToIframe();
+        };
+    }
+
+    const inc = document.getElementById("font-inc");
+    const dec = document.getElementById("font-dec");
+
+    if (inc) inc.onclick = () => {
+        fontScale += 0.1;
+        applyFontScale();
+    };
+
+    if (dec) dec.onclick = () => {
+        fontScale = Math.max(0.6, fontScale - 0.1);
+        applyFontScale();
+    };
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    attachHandlers(document);
+    attachGlobalControls();
+});
