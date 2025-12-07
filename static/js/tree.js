@@ -30,20 +30,32 @@ document.addEventListener("DOMContentLoaded", () => {
     /* ==== FILE CLICK ==== */
     document.querySelectorAll(".file").forEach(file => {
         file.addEventListener("click", () => {
-    
+
             const iframe = document.getElementById("viewer");
             const src = "/book/" + file.dataset.path;   // <<< ВАЖЛИВО!
             iframe.src = src;
-    
+
             document.querySelectorAll(".file").forEach(f => f.classList.remove("active"));
             file.classList.add("active");
-    
+
             document.getElementById("breadcrumbs").textContent = file.dataset.path;
-    
+
             iframe.onload = () => {
                 const doc = iframe.contentDocument;
                 if (!doc) return;
-    
+
+                // 🔥 Видалити всі CSP заголовки
+                doc.querySelectorAll('meta[http-equiv="Content-Security-Policy"]').forEach(el => el.remove());
+
+                // 🔥 Виправити відео-елементи
+                doc.querySelectorAll("video source").forEach(src => {
+                    let url = src.getAttribute("src");
+                    if (!url.startsWith("/book/")) {
+                        src.setAttribute("src", "/book/" + doc.baseURI.split("/book/")[1].replace(/[^\/]+$/, "") + url);
+                    }
+                });
+
+                // Далі твій код
                 doc.body.classList.add("book-page");
                 applyThemeToIframe();
                 applyFontScale(doc);
