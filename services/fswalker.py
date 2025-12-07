@@ -3,33 +3,42 @@ import os
 import re
 
 
-def read_folder(root_path, relative=""):
-    structure = []
+BOOKS_ROOT = os.path.join("static", "books")
 
-    # Використовуємо натуральне сортування для Chapter 1..10 і 0.0.1.1..10
-    for name in sorted(os.listdir(root_path), key=natural_key):
+# -------------------------------
+# READ ONE FOLDER (lazy)
+# -------------------------------
+def list_folder(relative_path: str):
+    """
+    Returns list of items inside folder.
+    Does NOT recurse deeper (lazy loading).
+    """
+    abs_path = os.path.join(BOOKS_ROOT, relative_path)
 
-        # Пропускаємо data/
+    if not os.path.exists(abs_path):
+        return []
+
+    entries = []
+
+    for name in sorted(os.listdir(abs_path), key=natural_key):
+
+        # Skip technical folders
         if name.lower() == "data":
             continue
 
-        abs_path = os.path.join(root_path, name)
-        rel_path = os.path.join(relative, name).replace("\\", "/")
+        full_abs = os.path.join(abs_path, name)
+        full_rel = os.path.join(relative_path, name).replace("\\", "/")
 
-        if os.path.isdir(abs_path):
-            structure.append({
-                "name": name,
-                "fullpath": rel_path,
-                "children": read_folder(abs_path, rel_path)
-            })
-        else:
-            structure.append({
-                "name": name,
-                "fullpath": rel_path,
-                "children": []
-            })
+        is_dir = os.path.isdir(full_abs)
 
-    return structure
+        entries.append({
+            "name": name,
+            "fullpath": full_rel,
+            "is_dir": is_dir,
+            "children": None if is_dir else []   # lazy token
+        })
+
+    return entries
 
 # View to the console tree structure for testing
 def print_tree(items, level=0):
@@ -45,54 +54,13 @@ def print_tree(items, level=0):
             # item = "filename"
             print(f"{prefix}{item}")
 
-def partial_response(path):
-    file_size = os.path.getsize(path)
-    range_header = request.headers.get('Range', None)
 
-    if not range_header:
-        # Без Range повертаємо весь файл
-        with open(path, 'rb') as f:
-            data = f.read()
-        return Response(
-            data,
-            200,
-            mimetype="video/mp4",
-            direct_passthrough=True,
-            headers={"Accept-Ranges": "bytes"}
-        )
+# -------------------------------
+# NATURAL SORT ("1", "2", "10")
+# -------------------------------
+def natural_key(text: str):
+    return [
+        int(num) if num.isdigit() else num.lower()
+        for num in re.split(r"(\d+)", text)
+    ]
 
-    # Парсимо Range
-    byte1, byte2 = 0, None
-    m = re.search(r'(\d+)-(\d*)', range_header)
-    if m:
-        g = m.groups()
-        byte1 = int(g[0])
-        if g[1]:
-            byte2 = int(g[1])
-
-    if byte2 is None:
-        byte2 = file_size - 1
-
-    length = byte2 - byte1 + 1
-
-    with open(path, 'rb') as f:
-        f.seek(byte1)
-        data = f.read(length)
-
-    rv = Response(
-        data,
-        206,
-        mimetype="video/mp4",
-        direct_passthrough=True,
-        headers={
-            "Content-Range": f"bytes {byte1}-{byte2}/{file_size}",
-            "Accept-Ranges": "bytes",
-            "Content-Length": str(length),
-        }
-    )
-    return rv
-
-
-def natural_key(text):
-    """Ключ для натурального сортування — числа в рядках сортуються правильно."""
-    return [int(t) if t.isdigit() else t.lower() for t in re.split(r'(\d+)', text)]

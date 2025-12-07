@@ -1,39 +1,37 @@
-from app import app
-from flask import abort, render_template, send_file
-from werkzeug.utils import safe_join
-from services.fswalker import read_folder, partial_response
+from flask import Blueprint, render_template, jsonify, request, send_file, abort
+from services.fswalker import list_folder, BOOKS_ROOT
 import os
 
 
+bp = Blueprint("main", __name__)
 
-@app.route("/")
-def main():
-    data = read_folder('./static/books')
-    return render_template("tree.html", tree=data)
+@bp.route("/")
+def index():
+    root_items = list_folder("")
+    return render_template("tree.html", tree=root_items)
 
 
-@app.route("/book/<path:file_path>")
-def serve_book(file_path):
-    base_dir = os.path.join(app.static_folder, "books")
-    abs_path = safe_join(base_dir, file_path)
+@bp.route("/api/folder")
+def api_folder():
+    rel = request.args.get("path", "")
+    items = list_folder(rel)
+    return jsonify(items)
 
-    if abs_path is None:
+@bp.route("/book/<path:rel_path>")
+def serve_book(rel_path):
+
+    # абсолютний шлях до файлу
+    abs_path = os.path.realpath(os.path.join(BOOKS_ROOT, rel_path))
+
+    # абсолютний шлях до кореня книг
+    root_path = os.path.realpath(BOOKS_ROOT)
+
+    # 🔥 Перевірка безпеки без багів
+    if os.path.commonpath([abs_path, root_path]) != root_path:
+        return abort(403)
+
+    # файл існує?
+    if not os.path.exists(abs_path):
         return abort(404)
 
-    if abs_path.lower().endswith(".mp4"):
-        return partial_response(abs_path)
-
-    # Enable Windows long path support
-    if os.name == "nt":
-        abs_path = "\\\\?\\" + os.path.abspath(abs_path)
-
-    if not os.path.isfile(abs_path):
-        return abort(404)
-
-    print("ABS PATH CHECK:", abs_path)
-    print("EXISTS:", os.path.exists(abs_path))
-    print("Sending:", abs_path)
-
-    # SEND FILE DIRECTLY — THIS FIXES LONG PATHS!
     return send_file(abs_path)
-

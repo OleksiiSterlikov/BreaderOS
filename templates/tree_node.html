@@ -1,29 +1,21 @@
 <li>
+    {% if item.is_dir %}
+        <div class="folder" data-path="{{ item.fullpath }}">{{ item.name }}</div>
 
-    {# ==== ПАПКА ==== #}
-    {% if item.children|length > 0 %}
-
-        <div class="folder" data-name="{{ item.name }}">
-            📁 {{ item.name }}
-        </div>
-
-        <ul class="hidden">
-            {% for child in item.children %}
-                {% with item=child %}
-                    {% include "tree_node.html" %}
-                {% endwith %}
-            {% endfor %}
+        <ul class="hidden" id="node-{{ item.fullpath | replace('/', '_') }}">
+            {# children == None → lazy, не показуємо нічого #}
+            {% if item.children %}
+                {% for child in item.children %}
+                    {% include "tree_node.html" with context %}
+                {% endfor %}
+            {% endif %}
         </ul>
 
-    {# ==== ФАЙЛ ==== #}
     {% else %}
-
-        {% if item.name.endswith(".html") %}
-            <div class="file"
-                 data-path="{{ item.fullpath }}">
-                📄 {{ item.name }}
-            </div>
-        {% endif %}
-
+        <div class="file"
+             data-file="/book/{{ item.fullpath }}"
+             data-path="{{ item.fullpath }}">
+            📄 {{ item.name }}
+        </div>
     {% endif %}
 </li>
