@@ -141,8 +141,10 @@ body.theme-dark {
     margin: 15px 0;
 }
 
-
-
+video, object, embed {
+    position: relative !important;
+    z-index: 1000 !important;
+}
 
 html, body {
     height: 100%;
@@ -160,6 +162,11 @@ iframe#viewer {
     height: 100%;
     width: 100%;
     overflow: auto;
+}
+
+#navbar {
+    z-index: 1000;
+    pointer-events: auto;
 }
 
 /* Footer always at bottom */
