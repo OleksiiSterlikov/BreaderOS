@@ -1,16 +1,18 @@
 {% extends "base.html" %}
 {% block content %}
-<div id="main">
-    <div class="sidebar">
-        <ul>
-            {% for item in tree %}
-                {% with item=item %}
-                    {% include "tree_node.html" %}
-                {% endwith %}
-            {% endfor %}
-        </ul>
-    </div>
+    <script>
+        window.BookPages = {{ pages | tojson }};
+    </script>
+    <div id="main">
+        <div class="sidebar">
+            <ul>
+                {% for item in tree %}
+                    {% with item=item %}
+                        {% include "tree_node.html" %}
+                    {% endwith %}
+                {% endfor %}
+            </ul>
+        </div>
         <iframe id="viewer" allow="autoplay; encrypted-media; fullscreen" allowfullscreen></iframe>
     </div>
-</div>
 {% endblock %}
