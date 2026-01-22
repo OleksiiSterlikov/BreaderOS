@@ -12,10 +12,13 @@
         </ul>
 
     {% else %}
-        <div class="file"
-             data-file="/book/{{ item.fullpath }}"
-             data-path="{{ item.fullpath }}">
+        <div class="file" data-path="{{ item.fullpath }}">
             📄 {{ item.name }}
         </div>
+        {#        <div class="file"#}
+        {#             data-file="/book/{{ item.fullpath }}"#}
+        {#             data-path="{{ item.fullpath }}">#}
+        {#            📄 {{ item.name }}#}
+        {#        </div>#}
     {% endif %}
 </li>

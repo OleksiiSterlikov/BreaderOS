@@ -40,6 +40,42 @@ def list_folder(relative_path: str):
 
     return entries
 
+def extract_all_pages(nodes):
+    pages = []
+
+    def walk(items):
+        for item in items:
+            if not item["is_dir"] and item["name"].lower().endswith(".html"):
+                pages.append(item["fullpath"])
+
+            if item.get("children"):
+                walk(item["children"])
+
+    walk(nodes)
+    return pages
+
+def extract_all_pages_fs():
+    pages = []
+
+    for root, dirs, files in os.walk(BOOKS_ROOT):
+        # Пропускаємо всі папки data
+        dirs[:] = [d for d in dirs if d.lower() != "data"]
+
+        for f in files:
+            if f.lower().endswith(".html"):
+                full = os.path.join(root, f)
+
+                rel = os.path.relpath(full, BOOKS_ROOT).replace("\\", "/")
+                pages.append(rel)
+
+    # Сортування за числовими частинами
+    def num_sort_key(s):
+        import re
+        return [int(x) if x.isdigit() else x.lower()
+                for x in re.split(r"(\d+)", s)]
+
+    pages.sort(key=num_sort_key)
+    return pages
 # View to the console tree structure for testing
 def print_tree(items, level=0):
     prefix = "  " * level  # -, --, ---, ---- ...
@@ -64,3 +100,16 @@ def natural_key(text: str):
         for num in re.split(r"(\d+)", text)
     ]
 
+def flatten_html(tree):
+    """Повертає список всіх html-файлів у правильному порядку."""
+    pages = []
+
+    def walk(items):
+        for item in items:
+            if item["children"]:
+                walk(item["children"])
+            if item["name"].lower().endswith(".html"):
+                pages.append(item["fullpath"].replace("\\", "/"))
+
+    walk(tree)
+    return pages
