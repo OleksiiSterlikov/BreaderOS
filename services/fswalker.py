@@ -1,41 +1,35 @@
 from flask import Response, request
 import os
 import re
+from pathlib import Path
 
+BOOKS_ROOT = Path("/app/static/books")
 
-BOOKS_ROOT = os.path.join("static", "books")
-
-# -------------------------------
-# READ ONE FOLDER (lazy)
-# -------------------------------
 def list_folder(relative_path: str):
     """
     Returns list of items inside folder.
     Does NOT recurse deeper (lazy loading).
     """
-    abs_path = os.path.join(BOOKS_ROOT, relative_path)
+    abs_path = BOOKS_ROOT / relative_path
 
-    if not os.path.exists(abs_path):
+    if not abs_path.exists():
         return []
 
     entries = []
 
-    for name in sorted(os.listdir(abs_path), key=natural_key):
+    for name in sorted(abs_path.iterdir(), key=lambda p: natural_key(p.name)):
 
         # Skip technical folders
-        if name.lower() == "data":
+        if name.name.lower() == "data":
             continue
 
-        full_abs = os.path.join(abs_path, name)
-        full_rel = os.path.join(relative_path, name).replace("\\", "/")
-
-        is_dir = os.path.isdir(full_abs)
+        rel = (Path(relative_path) / name.name).as_posix()
 
         entries.append({
-            "name": name,
-            "fullpath": full_rel,
-            "is_dir": is_dir,
-            "children": None if is_dir else []   # lazy token
+            "name": name.name,
+            "fullpath": rel,
+            "is_dir": name.is_dir(),
+            "children": None
         })
 
     return entries
