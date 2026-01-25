@@ -10,7 +10,6 @@ BOOKS_ROOT = os.path.join(os.path.dirname(__file__), "..", "static", "books")
 def index():
     root_items = list_folder("")
     pages = extract_all_pages_fs()   # <<< НЕ через lazy-data
-    print("PAGES:", pages)
     return render_template("tree.html", tree=root_items, pages=pages)
 
 

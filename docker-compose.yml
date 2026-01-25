@@ -7,6 +7,6 @@ services:
     ports:
       - "5000:5000"
     volumes:
-      # 🔥 книги зберігаються поза контейнером
-      - ./static/books:/app/static/books
+      - .:/app
+#      - ./static/books:/app/static/books
     restart: unless-stopped
