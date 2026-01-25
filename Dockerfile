@@ -6,14 +6,19 @@ ENV PYTHONUNBUFFERED=1
 
 WORKDIR /app
 
-# Системні залежності (мінімум)
+# Системні залежності + CA certificates
 RUN apt-get update && apt-get install -y \
+    ca-certificates \
     build-essential \
+    && update-ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
 # Python залежності
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir \
+    --trusted-host pypi.org \
+    --trusted-host files.pythonhosted.org \
+    -r requirements.txt
 
 # Код застосунку
 COPY . .
