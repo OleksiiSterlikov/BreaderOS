@@ -115,3 +115,12 @@ venv.bak/
 
 # Books files
 static/books/*
+
+# Codex
+.codex/
+
+# old files and directories
+old/
+
+# Secrets
+secrets/
