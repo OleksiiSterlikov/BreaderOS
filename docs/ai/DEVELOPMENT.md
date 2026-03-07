@@ -94,6 +94,7 @@ GUNICORN_GRACEFUL_TIMEOUT=30
 - `static/books/` - книги у форматі HTML
 - `tests/` - базові автоматизовані тести
 - `tools/import_book.py` - CLI-імпорт книг у `static/books`
+- `tools/audit_book_names.py` - dry-run аудит і нормалізація "брудних" імен у `static/books`
 
 ---
 
@@ -149,6 +150,7 @@ python tools/check_docs_consistency.py
 - віддачу HTML-книги через `/book/<path>`
 - узгодженість документації з поточним runtime і deployment stack
 - CLI-імпорт книг у `static/books`
+- dry-run аудит/нормалізацію імен у `static/books`
 
 ---
 
@@ -172,6 +174,30 @@ python tools/import_book.py /path/to/book-directory --target-subdir "Networking/
 ```bash
 python tools/import_book.py /path/to/book-directory --replace
 ```
+
+---
+
+## Аудит імен книг
+
+Dry-run аудит:
+
+```bash
+source .venv/bin/activate
+python tools/audit_book_names.py --books-root static/books
+```
+
+Застосування нормалізації:
+
+```bash
+python tools/audit_book_names.py --books-root static/books --apply
+```
+
+Поточний інструмент:
+
+- обрізає крайні пробіли в іменах файлів і директорій
+- будує dry-run план перейменувань
+- виявляє колізії після нормалізації
+- блокує `--apply`, якщо є конфлікти
 
 ---
 

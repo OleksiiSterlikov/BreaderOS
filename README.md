@@ -113,6 +113,7 @@ The application entrypoint exposes `create_app()` for tests and WSGI runtimes su
 - Books must be placed in `static/books/`
 - The application reads the directory structure directly from filesystem
 - A CLI import tool is available via `python tools/import_book.py ...`
+- A CLI dry-run audit/normalization tool is available via `python tools/audit_book_names.py`
 - There is currently no separate web-based `Content Manager` component in this repository
 - Sidebar folders are loaded on demand through `/api/folder`
 - The page index for previous/next navigation is loaded on demand through `/api/pages`
@@ -148,6 +149,23 @@ Replace existing imported directory:
 ```bash
 python tools/import_book.py /path/to/book-directory --replace
 ```
+
+## Book name audit
+
+Dry-run audit:
+
+```bash
+source .venv/bin/activate
+python tools/audit_book_names.py --books-root static/books
+```
+
+Apply normalization:
+
+```bash
+python tools/audit_book_names.py --books-root static/books --apply
+```
+
+The tool trims leading/trailing spaces from file and directory names and refuses to apply changes if normalized-name collisions are detected.
 
 ## Testing
 
