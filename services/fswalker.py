@@ -1,16 +1,27 @@
-from flask import Response, request
 import os
 import re
 from pathlib import Path
 
 BOOKS_ROOT = Path("/app/static/books")
 
+def resolve_books_path(relative_path: str) -> str:
+    """Resolve a path under BOOKS_ROOT and reject traversal outside it."""
+    root = Path(BOOKS_ROOT)
+    root_path = root.resolve()
+    abs_path = (root / relative_path).resolve()
+
+    if os.path.commonpath([str(abs_path), str(root_path)]) != str(root_path):
+        raise ValueError("Path escapes books root")
+
+    return abs_path
+
+
 def list_folder(relative_path: str):
     """
     Returns list of items inside folder.
     Does NOT recurse deeper (lazy loading).
     """
-    abs_path = BOOKS_ROOT / relative_path
+    abs_path = resolve_books_path(relative_path)
 
     if not abs_path.exists():
         return []

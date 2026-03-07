@@ -1,46 +1,122 @@
-# **BreaderOS**
+# BreaderOS
 
-## **Description:**
-### This application is designed for convenient playback of books and textbooks saved in HTML format with a structured division of chapters, sections, and folders
+## Description
 
-## **Опис:**
-### Даний застосунок призначений для зручного відтворення книг, підручників збережених у форматі HTML зі структурованим розділом глав, розділів то текам.
+BreaderOS is a Flask-based HTML book reader.
+The application shows a tree of books from `static/books`, opens selected pages in an `iframe`, supports light/dark theme switching, and allows changing text size inside the viewer.
 
+## Опис
 
-## **Installation:**
-```angular2html
- Will be described later
+BreaderOS - це Flask-застосунок для перегляду книг у форматі HTML.
+Застосунок показує дерево книг з `static/books`, відкриває вибрані сторінки в `iframe`, підтримує перемикання світлої/темної теми та зміну розміру тексту у viewer.
+
+## Features
+
+- Book tree loaded from filesystem
+- Lazy loading for nested folders in sidebar
+- HTML page rendering in `iframe`
+- Previous/next navigation between HTML pages
+- Light/dark theme toggle
+- Text size controls for book pages
+
+## Можливості
+
+- Дерево книг, згенероване з файлової системи
+- Lazy loading для вкладених папок у sidebar
+- Відкриття HTML-сторінок у `iframe`
+- Навігація між сторінками `Попередня/Наступна`
+- Перемикання світлої/темної теми
+- Керування розміром тексту для сторінок книги
+
+## Project structure
+
+```text
+app.py
+routes/
+services/
+templates/
+static/
+docs/ai/
+tests/
 ```
 
-## **Інсталювання:**
-```angular2html
- Буде описано пізніше
+## Installation
+
+### Local development
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
 ```
 
+### Docker
 
-## **Usage:**
-### Books are stored in the path static/books/
-### Content Manager copies the book folder to the static/books/ folder. If necessary, it can create a separate folder in the book's path and save the book to this folder.
-### On the left side the user sees a list of books or directions by clicking on the selected book or direction the user can navigate through the book tree. By clicking on a page it opens in a window on the right side.
-### The application allows you to zoom in/out images/text on the page and choose a light/dark theme
+```bash
+docker compose build
+docker compose up -d
+```
 
-## **Використання:**
-### Книги зберігаються за шляхом static/books/
-### Контент менеджер копіює теку з книгою у теку static/books/. За необхідності може створити окрему теку за напрямком книги та зберегти книгу в цю теку.
-### З лівої сторони користувач бачить перелік книг або напряки натиснувши на вибрану книгу або напрямок користувач може переходити по дереву книги. Натиснувши на сторінку вона відкривається у вікні з правої сторони.
-### Застосунок дає змогу збільшувати/зменшувати зображення/текст на сторінці та вибирати тему  світла/темна.
+Open in compose mode:
 
+```text
+http://127.0.0.1
+```
 
-## **Technologies:**
-### The following were used to create the application: Python, Flask, JavaScript
+## Run locally
 
-## **Технології:**
-### Для створення застосунку використовались: Python, Flask, JavaScript
+```bash
+source .venv/bin/activate
+python app.py
+```
 
+Open:
 
-## **Developers:**
-### Oleksii Sterlikov
+```text
+http://127.0.0.1:5000
+```
 
-## **Розробники:**
-### Стерліков Олексій
+## Usage
 
+- Books must be placed in `static/books/`
+- The application reads the directory structure directly from filesystem
+- There is currently no separate `Content Manager` component in this repository
+- Sidebar folders are loaded on demand through `/api/folder`
+- Selected HTML pages are served through `/book/<path>`
+
+## Використання
+
+- Книги потрібно розміщувати в `static/books/`
+- Застосунок читає структуру каталогів безпосередньо з файлової системи
+- Окремого компонента `Content Manager` у цьому репозиторії зараз немає
+- Папки в sidebar підвантажуються на вимогу через `/api/folder`
+- Вибрані HTML-сторінки віддаються через `/book/<path>`
+
+## Testing
+
+```bash
+source .venv/bin/activate
+python -m unittest discover -s tests -v
+```
+
+## Technologies
+
+- Python 3
+- Flask
+- Gunicorn
+- Nginx
+- Jinja2
+- Vanilla JavaScript
+- Bootstrap 4
+
+## Documentation
+
+- `docs/ai/ARCHITECTURE.md`
+- `docs/ai/DEVELOPMENT.md`
+- `docs/ai/DEPLOYMENT.md`
+- `docs/ai/SECURITY.md`
+- `docs/ai/backlog.md`
+
+## Developer
+
+Oleksii Sterlikov

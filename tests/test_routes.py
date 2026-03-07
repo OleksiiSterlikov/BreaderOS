@@ -1,0 +1,67 @@
+import tempfile
+import unittest
+from pathlib import Path
+
+from app import app
+from services import fswalker
+
+
+class RoutesTestCase(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls._temp_dir = tempfile.TemporaryDirectory()
+        cls.books_root = Path(cls._temp_dir.name)
+        cls.original_books_root = fswalker.BOOKS_ROOT
+
+        sample_dir = cls.books_root / "Sample Book" / "Chapter 1"
+        sample_dir.mkdir(parents=True, exist_ok=True)
+        (sample_dir / "page1.html").write_text(
+            "<html><body><h1>Sample page</h1></body></html>",
+            encoding="utf-8",
+        )
+        (sample_dir / "note.txt").write_text("ignore", encoding="utf-8")
+
+        fswalker.BOOKS_ROOT = str(cls.books_root)
+        app.config["TESTING"] = True
+        cls.client = app.test_client()
+
+    @classmethod
+    def tearDownClass(cls):
+        fswalker.BOOKS_ROOT = cls.original_books_root
+        cls._temp_dir.cleanup()
+
+    def test_index_page_opens(self):
+        response = self.client.get("/")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(b'<iframe id="viewer"', response.data)
+
+    def test_api_folder_lists_book_tree(self):
+        response = self.client.get("/api/folder")
+
+        self.assertEqual(response.status_code, 200)
+        payload = response.get_json()
+        self.assertEqual(payload[0]["name"], "Sample Book")
+        self.assertTrue(payload[0]["is_dir"])
+
+    def test_api_folder_blocks_traversal(self):
+        response = self.client.get("/api/folder?path=..")
+
+        self.assertEqual(response.status_code, 403)
+
+    def test_book_serves_html_file(self):
+        response = self.client.get("/book/Sample%20Book/Chapter%201/page1.html")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(b"Sample page", response.data)
+        response.close()
+
+    def test_book_blocks_traversal(self):
+        response = self.client.get("/book/../app.py")
+
+        self.assertEqual(response.status_code, 403)
+        response.close()
+
+
+if __name__ == "__main__":
+    unittest.main()
