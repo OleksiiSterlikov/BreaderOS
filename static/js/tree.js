@@ -112,7 +112,7 @@ function openFile(path) {
         applyFontScale(doc);
 
         // навігація кнопками
-        await insertPageNavigation(doc, path);
+        await updatePageNavigation(path);
     };
 }
 
@@ -120,26 +120,16 @@ function openFile(path) {
    КНОПКИ НАВІГАЦІЇ (← →)
 ====================================================== */
 
-async function insertPageNavigation(doc, currentPath) {
-    const nav = doc.createElement("div");
-    nav.style.cssText = `
-        width: 100%;
-        display: flex;
-        justify-content: space-between;
-        margin-top: 40px;
-        padding: 20px 0;
-        border-top: 1px solid #888;
-        font-size: 20px;
-    `;
+async function updatePageNavigation(currentPath) {
+    const prevBtn = document.getElementById("nav-prev");
+    const nextBtn = document.getElementById("nav-next");
 
-    const prevBtn = doc.createElement("button");
-    prevBtn.textContent = "⬅ Попередня";
+    if (!prevBtn || !nextBtn) return;
 
-    const nextBtn = doc.createElement("button");
-    nextBtn.textContent = "Наступна ➡";
-
-    nav.append(prevBtn, nextBtn);
-    doc.body.appendChild(nav);
+    prevBtn.disabled = true;
+    nextBtn.disabled = true;
+    prevBtn.onclick = null;
+    nextBtn.onclick = null;
 
     prevBtn.disabled = true;
     nextBtn.disabled = true;
@@ -160,7 +150,7 @@ async function insertPageNavigation(doc, currentPath) {
             nextBtn.onclick = () => openFile(navigation.next);
         }
     } catch {
-        // Keep disabled buttons rendered as a visible fallback.
+        // Keep disabled buttons visible as a fallback.
     }
 }
 

@@ -126,6 +126,27 @@ body.theme-dark {
     border: none;
 }
 
+#viewer-panel {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-width: 0;
+}
+
+#viewer-navigation {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px 16px;
+    border-top: 1px solid var(--header-border);
+    background: var(--header-bg);
+}
+
+#viewer-navigation button {
+    min-width: 160px;
+    padding: 10px 14px;
+}
+
 /* ===========================
    CONTENT PAGE (в iframe)
 =========================== */
@@ -165,7 +186,7 @@ video, object, embed {
 iframe#viewer {
     flex-grow: 1;
     border: none;
-    height: 100%;
+    height: calc(100% - 58px);
     width: 100%;
     overflow: auto;
 }

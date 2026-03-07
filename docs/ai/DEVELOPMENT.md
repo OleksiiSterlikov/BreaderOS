@@ -104,6 +104,7 @@ GUNICORN_GRACEFUL_TIMEOUT=30
 
 - sidebar з деревом книг
 - `iframe` для перегляду HTML-сторінок
+- окремий navigation bar поза `iframe` для кнопок `Попередня/Наступна`
 - lazy loading вкладених папок через `/api/folder`
 - on-demand завантаження індексу сторінок через `/api/pages`
 - server-side navigation context через `/api/navigation`

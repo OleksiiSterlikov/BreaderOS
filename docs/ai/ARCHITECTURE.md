@@ -88,6 +88,7 @@ Flask відповідає за:
 - fixed header
 - sidebar з деревом книг
 - viewer на базі `iframe`
+- окрема navigation bar під viewer поза межами `iframe`
 - footer
 
 ---
