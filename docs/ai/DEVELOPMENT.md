@@ -113,12 +113,20 @@ source .venv/bin/activate
 python -m unittest discover -s tests -v
 ```
 
+Перевірка актуальності документації:
+
+```bash
+source .venv/bin/activate
+python tools/check_docs_consistency.py
+```
+
 Поточний набір перевіряє:
 
 - відкриття головної сторінки
 - коректну роботу `/api/folder`
 - блокування path traversal
 - віддачу HTML-книги через `/book/<path>`
+- узгодженість документації з поточним runtime і deployment stack
 
 ---
 

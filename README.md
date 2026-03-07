@@ -118,6 +118,13 @@ source .venv/bin/activate
 python -m unittest discover -s tests -v
 ```
 
+Documentation consistency check:
+
+```bash
+source .venv/bin/activate
+python tools/check_docs_consistency.py
+```
+
 ## Technologies
 
 - Python 3
