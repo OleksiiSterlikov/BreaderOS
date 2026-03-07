@@ -103,6 +103,7 @@ GUNICORN_GRACEFUL_TIMEOUT=30
 - sidebar з деревом книг
 - `iframe` для перегляду HTML-сторінок
 - lazy loading вкладених папок через `/api/folder`
+- on-demand завантаження індексу сторінок через `/api/pages`
 - кнопки `A-` і `A+` для зміни розміру тексту
 - перемикач світлої/темної теми
 
@@ -112,6 +113,7 @@ GUNICORN_GRACEFUL_TIMEOUT=30
 
 - `/` - головна сторінка з деревом книг
 - `/api/folder?path=...` - повертає вміст папки всередині `static/books`
+- `/api/pages` - повертає індекс HTML-сторінок для навігації `Попередня/Наступна`
 - `/book/<path>` - безпечна віддача файлу книги
 
 Для `/api/folder` і `/book/<path>` діє обмеження доступу лише в межах каталогу книг.
@@ -138,6 +140,7 @@ python tools/check_docs_consistency.py
 
 - відкриття головної сторінки
 - коректну роботу `/api/folder`
+- коректну роботу `/api/pages`
 - блокування path traversal
 - віддачу HTML-книги через `/book/<path>`
 - узгодженість документації з поточним runtime і deployment stack

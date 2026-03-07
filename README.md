@@ -114,6 +114,7 @@ The application entrypoint exposes `create_app()` for tests and WSGI runtimes su
 - The application reads the directory structure directly from filesystem
 - There is currently no separate `Content Manager` component in this repository
 - Sidebar folders are loaded on demand through `/api/folder`
+- The page index for previous/next navigation is loaded on demand through `/api/pages`
 - Selected HTML pages are served through `/book/<path>`
 
 ## Використання
@@ -122,6 +123,7 @@ The application entrypoint exposes `create_app()` for tests and WSGI runtimes su
 - Застосунок читає структуру каталогів безпосередньо з файлової системи
 - Окремого компонента `Content Manager` у цьому репозиторії зараз немає
 - Папки в sidebar підвантажуються на вимогу через `/api/folder`
+- Індекс HTML-сторінок для `Попередня/Наступна` підвантажується на вимогу через `/api/pages`
 - Вибрані HTML-сторінки віддаються через `/book/<path>`
 
 ## Testing

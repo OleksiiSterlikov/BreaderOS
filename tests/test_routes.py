@@ -36,6 +36,7 @@ class RoutesTestCase(unittest.TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertIn(b'<iframe id="viewer"', response.data)
+        self.assertIn(b"window.BookPages = []", response.data)
 
     def test_api_folder_lists_book_tree(self):
         response = self.client.get("/api/folder")
@@ -49,6 +50,13 @@ class RoutesTestCase(unittest.TestCase):
         response = self.client.get("/api/folder?path=..")
 
         self.assertEqual(response.status_code, 403)
+
+    def test_api_pages_returns_html_page_index(self):
+        response = self.client.get("/api/pages")
+
+        self.assertEqual(response.status_code, 200)
+        payload = response.get_json()
+        self.assertEqual(payload, ["Sample Book/Chapter 1/page1.html"])
 
     def test_book_serves_html_file(self):
         response = self.client.get("/book/Sample%20Book/Chapter%201/page1.html")

@@ -22,7 +22,8 @@
 <!-- Your app script — MUST BE LAST -->
 <script>
     window.BookPages = {{ pages | tojson }};
-    console.log("BookPages from JINJA:", window.BookPages);
+    window.BookPagesLoaded = false;
+    window.BookPagesPromise = null;
 </script>
 
 <script src="{{ url_for('static', filename='js/tree.js') }}?v=2"></script>

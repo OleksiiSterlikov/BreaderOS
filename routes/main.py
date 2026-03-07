@@ -12,8 +12,7 @@ bp = Blueprint("main", __name__)
 @bp.route("/")
 def index():
     root_items = list_folder("")
-    pages = extract_all_pages_fs()
-    return render_template("tree.html", tree=root_items, pages=pages)
+    return render_template("tree.html", tree=root_items, pages=[])
 
 
 @bp.route("/api/folder")
@@ -24,6 +23,11 @@ def api_folder():
     except ValueError:
         abort(403)
     return jsonify(items)
+
+
+@bp.route("/api/pages")
+def api_pages():
+    return jsonify(extract_all_pages_fs())
 
 @bp.route("/book/<path:rel_path>")
 def serve_book(rel_path):

@@ -58,6 +58,31 @@ async function loadFolder(ul, path) {
     attachHandlers(ul); // підключаємо події до нових елементів
 }
 
+async function ensureBookPages() {
+    if (window.BookPagesLoaded) {
+        return window.BookPages;
+    }
+
+    if (!window.BookPagesPromise) {
+        window.BookPagesPromise = fetch("/api/pages")
+            .then(res => res.json())
+            .then(items => {
+                window.BookPages = items;
+                window.BookPagesLoaded = true;
+                return items;
+            })
+            .catch(() => {
+                window.BookPages = [];
+                return window.BookPages;
+            })
+            .finally(() => {
+                window.BookPagesPromise = null;
+            });
+    }
+
+    return window.BookPagesPromise;
+}
+
 /* ======================================================
    ПІДКЛЮЧЕННЯ ОБРОБНИКІВ
 ====================================================== */
@@ -96,14 +121,17 @@ function attachHandlers(root) {
 
 function openFile(path) {
     const iframe = document.getElementById("viewer");
+    const pagesPromise = ensureBookPages();
     iframe.src = "/book/" + path;
 
     // breadcrumbs
     document.getElementById("breadcrumbs").textContent = path;
 
-    iframe.onload = () => {
+    iframe.onload = async () => {
         const doc = iframe.contentDocument;
         if (!doc) return;
+
+        await pagesPromise;
 
         // тема
         applyThemeToIframe();
