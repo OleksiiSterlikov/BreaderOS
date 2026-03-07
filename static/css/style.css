@@ -131,15 +131,22 @@ body.theme-dark {
     flex: 1;
     flex-direction: column;
     min-width: 0;
+    padding-bottom: 64px;
 }
 
 #viewer-navigation {
     display: flex;
     justify-content: space-between;
     gap: 12px;
+    position: fixed;
+    left: 320px;
+    right: 0;
+    bottom: 40px;
     padding: 10px 16px;
     border-top: 1px solid var(--header-border);
     background: var(--header-bg);
+    z-index: 9000;
+    box-shadow: 0 -4px 18px rgba(0, 0, 0, 0.08);
 }
 
 #viewer-navigation button {
@@ -186,9 +193,15 @@ video, object, embed {
 iframe#viewer {
     flex-grow: 1;
     border: none;
-    height: calc(100% - 58px);
+    height: 100%;
     width: 100%;
     overflow: auto;
+}
+
+@media (max-width: 900px) {
+    #viewer-navigation {
+        left: 0;
+    }
 }
 
 #navbar {
