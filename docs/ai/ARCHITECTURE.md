@@ -39,6 +39,7 @@ Flask відповідає за:
 - `gunicorn` запускає Flask app
 - `nginx` працює як reverse proxy
 - `docker-compose.yml` піднімає два сервіси: `app` і `nginx`
+- `gunicorn.conf.py` містить поточний runtime-профіль Gunicorn
 
 ---
 

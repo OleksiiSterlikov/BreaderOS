@@ -46,6 +46,8 @@ APP_USE_RELOADER=0
 APP_USE_DEBUGGER=0
 ```
 
+Файл `.env.example` містить еталонний набір підтримуваних змінних оточення.
+
 `app.py` тепер містить `create_app()`, який можна використовувати для:
 
 - тестів
@@ -65,6 +67,18 @@ docker compose up -d
 
 ```text
 http://127.0.0.1
+```
+
+Compose/runtime профіль використовує `gunicorn.conf.py`.
+
+Поточні параметри `Gunicorn` задаються через env:
+
+```bash
+GUNICORN_BIND=0.0.0.0:5000
+GUNICORN_WORKERS=4
+GUNICORN_THREADS=1
+GUNICORN_TIMEOUT=60
+GUNICORN_GRACEFUL_TIMEOUT=30
 ```
 
 ---

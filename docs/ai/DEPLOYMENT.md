@@ -15,7 +15,8 @@
 
 - build з локального `Dockerfile`
 - слухає `5000` всередині compose network
-- запускається командою `gunicorn -w 4 -b 0.0.0.0:5000 app:app`
+- запускається командою `gunicorn -c gunicorn.conf.py app:app`
+- runtime-параметри `gunicorn` можуть керуватися через env-змінні
 
 ### nginx
 
@@ -79,6 +80,8 @@ git pull
 docker compose build
 docker compose up -d
 ```
+
+За потреби runtime-параметри можна зафіксувати через `.env` на основі `.env.example`.
 
 ---
 
