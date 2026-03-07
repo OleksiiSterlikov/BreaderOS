@@ -1,6 +1,6 @@
 import os
 import re
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 
 BOOKS_ROOT = Path("/app/static/books")
 
@@ -79,7 +79,7 @@ def extract_all_pages_fs():
         return [int(x) if x.isdigit() else x.lower()
                 for x in re.split(r"(\d+)", s)]
 
-    pages.sort(key=num_sort_key)
+    pages.sort(key=path_sort_key)
     return pages
 # View to the console tree structure for testing
 def print_tree(items, level=0):
@@ -100,10 +100,38 @@ def print_tree(items, level=0):
 # NATURAL SORT ("1", "2", "10")
 # -------------------------------
 def natural_key(text: str):
+    normalized = normalize_sort_text(text)
     return [
         int(num) if num.isdigit() else num.lower()
-        for num in re.split(r"(\d+)", text)
+        for num in re.split(r"(\d+)", normalized)
     ]
+
+
+def normalize_sort_text(text: str) -> str:
+    return text.strip()
+
+
+def path_sort_key(path: str):
+    return tuple(tuple(natural_key(part)) for part in PurePosixPath(path).parts)
+
+
+def normalize_lookup_path(path: str) -> str:
+    return "/".join(part.strip() for part in PurePosixPath(path).parts)
+
+
+def get_page_navigation(current_path: str, pages: list[str] | None = None) -> dict[str, str | None]:
+    pages = pages or extract_all_pages_fs()
+    normalized_current = normalize_lookup_path(current_path)
+    normalized_pages = [normalize_lookup_path(page) for page in pages]
+
+    try:
+        idx = normalized_pages.index(normalized_current)
+    except ValueError:
+        raise LookupError(f"page not found in index: {current_path}")
+
+    prev_path = pages[idx - 1] if idx > 0 else None
+    next_path = pages[idx + 1] if idx < len(pages) - 1 else None
+    return {"prev": prev_path, "next": next_path}
 
 def flatten_html(tree):
     """Повертає список всіх html-файлів у правильному порядку."""

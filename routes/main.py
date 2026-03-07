@@ -2,6 +2,7 @@ from flask import Blueprint, render_template, jsonify, request, send_file, abort
 from services.fswalker import (
     list_folder,
     extract_all_pages_fs,
+    get_page_navigation,
     resolve_books_path,
 )
 import os
@@ -28,6 +29,17 @@ def api_folder():
 @bp.route("/api/pages")
 def api_pages():
     return jsonify(extract_all_pages_fs())
+
+
+@bp.route("/api/navigation")
+def api_navigation():
+    current_path = request.args.get("path", "")
+    try:
+        navigation = get_page_navigation(current_path)
+    except LookupError:
+        abort(404)
+    return jsonify(navigation)
+
 
 @bp.route("/book/<path:rel_path>")
 def serve_book(rel_path):

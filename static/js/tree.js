@@ -58,31 +58,6 @@ async function loadFolder(ul, path) {
     attachHandlers(ul); // підключаємо події до нових елементів
 }
 
-async function ensureBookPages() {
-    if (window.BookPagesLoaded) {
-        return window.BookPages;
-    }
-
-    if (!window.BookPagesPromise) {
-        window.BookPagesPromise = fetch("/api/pages")
-            .then(res => res.json())
-            .then(items => {
-                window.BookPages = items;
-                window.BookPagesLoaded = true;
-                return items;
-            })
-            .catch(() => {
-                window.BookPages = [];
-                return window.BookPages;
-            })
-            .finally(() => {
-                window.BookPagesPromise = null;
-            });
-    }
-
-    return window.BookPagesPromise;
-}
-
 /* ======================================================
    ПІДКЛЮЧЕННЯ ОБРОБНИКІВ
 ====================================================== */
@@ -121,7 +96,6 @@ function attachHandlers(root) {
 
 function openFile(path) {
     const iframe = document.getElementById("viewer");
-    const pagesPromise = ensureBookPages();
     iframe.src = "/book/" + path;
 
     // breadcrumbs
@@ -131,8 +105,6 @@ function openFile(path) {
         const doc = iframe.contentDocument;
         if (!doc) return;
 
-        await pagesPromise;
-
         // тема
         applyThemeToIframe();
 
@@ -140,7 +112,7 @@ function openFile(path) {
         applyFontScale(doc);
 
         // навігація кнопками
-        insertPageNavigation(doc, path);
+        await insertPageNavigation(doc, path);
     };
 }
 
@@ -148,10 +120,11 @@ function openFile(path) {
    КНОПКИ НАВІГАЦІЇ (← →)
 ====================================================== */
 
-function insertPageNavigation(doc, currentPath) {
-    if (!window.BookPages) return;
+async function insertPageNavigation(doc, currentPath) {
+    const res = await fetch(`/api/navigation?path=${encodeURIComponent(currentPath)}`);
+    if (!res.ok) return;
 
-    const idx = window.BookPages.indexOf(currentPath);
+    const navigation = await res.json();
 
     const nav = doc.createElement("div");
     nav.style.cssText = `
@@ -174,15 +147,15 @@ function insertPageNavigation(doc, currentPath) {
     doc.body.appendChild(nav);
 
     // previous
-    if (idx > 0) {
-        prevBtn.onclick = () => openFile(window.BookPages[idx - 1]);
+    if (navigation.prev) {
+        prevBtn.onclick = () => openFile(navigation.prev);
     } else {
         prevBtn.disabled = true;
     }
 
     // next
-    if (idx < window.BookPages.length - 1) {
-        nextBtn.onclick = () => openFile(window.BookPages[idx + 1]);
+    if (navigation.next) {
+        nextBtn.onclick = () => openFile(navigation.next);
     } else {
         nextBtn.disabled = true;
     }

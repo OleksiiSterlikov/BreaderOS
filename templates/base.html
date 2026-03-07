@@ -22,8 +22,6 @@
 <!-- Your app script — MUST BE LAST -->
 <script>
     window.BookPages = {{ pages | tojson }};
-    window.BookPagesLoaded = false;
-    window.BookPagesPromise = null;
 </script>
 
 <script src="{{ url_for('static', filename='js/tree.js') }}?v=2"></script>

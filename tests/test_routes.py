@@ -20,6 +20,12 @@ class RoutesTestCase(unittest.TestCase):
             encoding="utf-8",
         )
         (sample_dir / "note.txt").write_text("ignore", encoding="utf-8")
+        chapter_two = cls.books_root / "Sample Book" / "Chapter 2"
+        chapter_two.mkdir(parents=True, exist_ok=True)
+        (chapter_two / "page2.html").write_text(
+            "<html><body><h1>Next page</h1></body></html>",
+            encoding="utf-8",
+        )
 
         fswalker.BOOKS_ROOT = str(cls.books_root)
         app = create_app()
@@ -56,7 +62,21 @@ class RoutesTestCase(unittest.TestCase):
 
         self.assertEqual(response.status_code, 200)
         payload = response.get_json()
-        self.assertEqual(payload, ["Sample Book/Chapter 1/page1.html"])
+        self.assertEqual(
+            payload,
+            [
+                "Sample Book/Chapter 1/page1.html",
+                "Sample Book/Chapter 2/page2.html",
+            ],
+        )
+
+    def test_api_navigation_returns_prev_next(self):
+        response = self.client.get("/api/navigation?path=Sample%20Book/Chapter%201/page1.html")
+
+        self.assertEqual(response.status_code, 200)
+        payload = response.get_json()
+        self.assertIsNone(payload["prev"])
+        self.assertEqual(payload["next"], "Sample Book/Chapter 2/page2.html")
 
     def test_book_serves_html_file(self):
         response = self.client.get("/book/Sample%20Book/Chapter%201/page1.html")

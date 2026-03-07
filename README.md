@@ -116,6 +116,7 @@ The application entrypoint exposes `create_app()` for tests and WSGI runtimes su
 - There is currently no separate web-based `Content Manager` component in this repository
 - Sidebar folders are loaded on demand through `/api/folder`
 - The page index for previous/next navigation is loaded on demand through `/api/pages`
+- Previous/next buttons resolve navigation through `/api/navigation`
 - Selected HTML pages are served through `/book/<path>`
 
 ## Використання
@@ -126,6 +127,7 @@ The application entrypoint exposes `create_app()` for tests and WSGI runtimes su
 - Окремого web-інтерфейсу `Content Manager` у цьому репозиторії зараз немає
 - Папки в sidebar підвантажуються на вимогу через `/api/folder`
 - Індекс HTML-сторінок для `Попередня/Наступна` підвантажується на вимогу через `/api/pages`
+- Кнопки `Попередня/Наступна` отримують контекст навігації через `/api/navigation`
 - Вибрані HTML-сторінки віддаються через `/book/<path>`
 
 ## Book import
