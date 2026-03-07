@@ -101,7 +101,8 @@ Flask відповідає за:
 
 Книги:
 
-- `/app/static/books`
+- локально: `<repo>/static/books`
+- у контейнері: `/app/static/books` через `BOOKS_ROOT` або робочу директорію контейнера
 
 ---
 

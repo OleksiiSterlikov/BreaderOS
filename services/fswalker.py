@@ -2,7 +2,17 @@ import os
 import re
 from pathlib import Path, PurePosixPath
 
-BOOKS_ROOT = Path("/app/static/books")
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+
+
+def default_books_root() -> Path:
+    configured = os.getenv("BOOKS_ROOT")
+    if configured:
+        return Path(configured)
+    return PROJECT_ROOT / "static" / "books"
+
+
+BOOKS_ROOT = default_books_root()
 
 def resolve_books_path(relative_path: str) -> str:
     """Resolve a path under BOOKS_ROOT and reject traversal outside it."""

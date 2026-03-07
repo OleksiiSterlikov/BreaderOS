@@ -59,6 +59,7 @@ APP_PORT=5000
 APP_DEBUG=0
 APP_USE_RELOADER=0
 APP_USE_DEBUGGER=0
+BOOKS_ROOT=static/books
 ```
 
 Production/runtime parameters:
@@ -69,6 +70,7 @@ GUNICORN_WORKERS=4
 GUNICORN_THREADS=1
 GUNICORN_TIMEOUT=60
 GUNICORN_GRACEFUL_TIMEOUT=30
+BOOKS_ROOT=/app/static/books
 ```
 
 ### Docker
@@ -111,6 +113,8 @@ The application entrypoint exposes `create_app()` for tests and WSGI runtimes su
 ## Usage
 
 - Books must be placed in `static/books/`
+- Local direct run uses `static/books/` by default
+- Docker/container run may use `BOOKS_ROOT=/app/static/books`
 - The application reads the directory structure directly from filesystem
 - A CLI import tool is available via `python tools/import_book.py ...`
 - A CLI dry-run audit/normalization tool is available via `python tools/audit_book_names.py`
