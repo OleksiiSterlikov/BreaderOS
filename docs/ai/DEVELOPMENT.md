@@ -93,6 +93,7 @@ GUNICORN_GRACEFUL_TIMEOUT=30
 - `static/js/` - клієнтська логіка дерева і viewer
 - `static/books/` - книги у форматі HTML
 - `tests/` - базові автоматизовані тести
+- `tools/import_book.py` - CLI-імпорт книг у `static/books`
 
 ---
 
@@ -144,6 +145,30 @@ python tools/check_docs_consistency.py
 - блокування path traversal
 - віддачу HTML-книги через `/book/<path>`
 - узгодженість документації з поточним runtime і deployment stack
+- CLI-імпорт книг у `static/books`
+
+---
+
+## Імпорт книг
+
+Базовий імпорт:
+
+```bash
+source .venv/bin/activate
+python tools/import_book.py /path/to/book-directory
+```
+
+Імпорт у вкладений каталог:
+
+```bash
+python tools/import_book.py /path/to/book-directory --target-subdir "Networking/CCNA"
+```
+
+Перезапис існуючого імпорту:
+
+```bash
+python tools/import_book.py /path/to/book-directory --replace
+```
 
 ---
 

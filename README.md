@@ -112,7 +112,8 @@ The application entrypoint exposes `create_app()` for tests and WSGI runtimes su
 
 - Books must be placed in `static/books/`
 - The application reads the directory structure directly from filesystem
-- There is currently no separate `Content Manager` component in this repository
+- A CLI import tool is available via `python tools/import_book.py ...`
+- There is currently no separate web-based `Content Manager` component in this repository
 - Sidebar folders are loaded on demand through `/api/folder`
 - The page index for previous/next navigation is loaded on demand through `/api/pages`
 - Selected HTML pages are served through `/book/<path>`
@@ -121,10 +122,30 @@ The application entrypoint exposes `create_app()` for tests and WSGI runtimes su
 
 - Книги потрібно розміщувати в `static/books/`
 - Застосунок читає структуру каталогів безпосередньо з файлової системи
-- Окремого компонента `Content Manager` у цьому репозиторії зараз немає
+- Для імпорту книг доступний CLI-інструмент `python tools/import_book.py ...`
+- Окремого web-інтерфейсу `Content Manager` у цьому репозиторії зараз немає
 - Папки в sidebar підвантажуються на вимогу через `/api/folder`
 - Індекс HTML-сторінок для `Попередня/Наступна` підвантажується на вимогу через `/api/pages`
 - Вибрані HTML-сторінки віддаються через `/book/<path>`
+
+## Book import
+
+```bash
+source .venv/bin/activate
+python tools/import_book.py /path/to/book-directory
+```
+
+Import into a nested category:
+
+```bash
+python tools/import_book.py /path/to/book-directory --target-subdir "Networking/CCNA"
+```
+
+Replace existing imported directory:
+
+```bash
+python tools/import_book.py /path/to/book-directory --replace
+```
 
 ## Testing
 
