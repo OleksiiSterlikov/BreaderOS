@@ -4,11 +4,13 @@
 
 BreaderOS is a Flask-based HTML book reader.
 The application shows a tree of books from `static/books`, opens selected pages in an `iframe`, supports light/dark theme switching, and allows changing text size inside the viewer.
+Current UI release marker: `BooksView v.1.2.1`.
 
 ## Опис
 
 BreaderOS - це Flask-застосунок для перегляду книг у форматі HTML.
 Застосунок показує дерево книг з `static/books`, відкриває вибрані сторінки в `iframe`, підтримує перемикання світлої/темної теми та зміну розміру тексту у viewer.
+Поточний UI release marker: `BooksView v.1.2.1`.
 
 ## Features
 
