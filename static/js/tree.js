@@ -96,7 +96,7 @@ function attachHandlers(root) {
 
 function openFile(path) {
     const iframe = document.getElementById("viewer");
-    iframe.src = "/book/" + path;
+    iframe.src = buildBookUrl(path);
 
     // breadcrumbs
     document.getElementById("breadcrumbs").textContent = path;
@@ -121,11 +121,6 @@ function openFile(path) {
 ====================================================== */
 
 async function insertPageNavigation(doc, currentPath) {
-    const res = await fetch(`/api/navigation?path=${encodeURIComponent(currentPath)}`);
-    if (!res.ok) return;
-
-    const navigation = await res.json();
-
     const nav = doc.createElement("div");
     nav.style.cssText = `
         width: 100%;
@@ -146,19 +141,35 @@ async function insertPageNavigation(doc, currentPath) {
     nav.append(prevBtn, nextBtn);
     doc.body.appendChild(nav);
 
-    // previous
-    if (navigation.prev) {
-        prevBtn.onclick = () => openFile(navigation.prev);
-    } else {
-        prevBtn.disabled = true;
-    }
+    prevBtn.disabled = true;
+    nextBtn.disabled = true;
 
-    // next
-    if (navigation.next) {
-        nextBtn.onclick = () => openFile(navigation.next);
-    } else {
-        nextBtn.disabled = true;
+    try {
+        const res = await fetch(`/api/navigation?path=${encodeURIComponent(currentPath)}`);
+        if (!res.ok) return;
+
+        const navigation = await res.json();
+
+        if (navigation.prev) {
+            prevBtn.disabled = false;
+            prevBtn.onclick = () => openFile(navigation.prev);
+        }
+
+        if (navigation.next) {
+            nextBtn.disabled = false;
+            nextBtn.onclick = () => openFile(navigation.next);
+        }
+    } catch {
+        // Keep disabled buttons rendered as a visible fallback.
     }
+}
+
+function buildBookUrl(path) {
+    const encodedPath = path
+        .split("/")
+        .map(part => encodeURIComponent(part))
+        .join("/");
+    return "/book/" + encodedPath;
 }
 
 /* ======================================================
