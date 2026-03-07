@@ -42,6 +42,7 @@ class RoutesTestCase(unittest.TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertIn(b'<iframe id="viewer"', response.data)
+        self.assertIn(b'id="viewer-toolbar"', response.data)
         self.assertIn(b'id="nav-prev"', response.data)
         self.assertIn(b'id="nav-next"', response.data)
         self.assertIn(b"window.BookPages = []", response.data)

@@ -103,7 +103,7 @@ GUNICORN_GRACEFUL_TIMEOUT=30
 Поточна UI-модель:
 
 - sidebar з деревом книг
-- глобальний fixed overlay для кнопок `Попередня/Наступна`
+- окремий toolbar над viewer для кнопок `Попередня/Наступна`
 - `iframe` для перегляду HTML-сторінок
 - lazy loading вкладених папок через `/api/folder`
 - on-demand завантаження індексу сторінок через `/api/pages`
@@ -147,11 +147,15 @@ python tools/check_docs_consistency.py
 - коректну роботу `/api/folder`
 - коректну роботу `/api/pages`
 - коректну роботу `/api/navigation`
+- доставку viewer toolbar у фінальний HTML через реальний HTTP-сервер
 - блокування path traversal
 - віддачу HTML-книги через `/book/<path>`
 - узгодженість документації з поточним runtime і deployment stack
 - CLI-імпорт книг у `static/books`
 - dry-run аудит/нормалізацію імен у `static/books`
+- доставку navigation toolbar через реальний HTTP-сервер
+
+HTTP integration test для browser-level доставки HTML може бути позначений як `skipped` у sandbox-середовищах, де заборонене відкриття локального сокета.
 
 ---
 
