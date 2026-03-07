@@ -103,8 +103,8 @@ GUNICORN_GRACEFUL_TIMEOUT=30
 Поточна UI-модель:
 
 - sidebar з деревом книг
+- кнопки `Попередня/Наступна` в top header
 - `iframe` для перегляду HTML-сторінок
-- окремий fixed navigation bar поза `iframe` для кнопок `Попередня/Наступна`
 - lazy loading вкладених папок через `/api/folder`
 - on-demand завантаження індексу сторінок через `/api/pages`
 - server-side navigation context через `/api/navigation`

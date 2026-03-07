@@ -117,7 +117,7 @@ The application entrypoint exposes `create_app()` for tests and WSGI runtimes su
 - There is currently no separate web-based `Content Manager` component in this repository
 - Sidebar folders are loaded on demand through `/api/folder`
 - The page index for previous/next navigation is loaded on demand through `/api/pages`
-- Previous/next buttons are rendered in a fixed navigation bar outside the `iframe` and resolve navigation through `/api/navigation`
+- Previous/next buttons are rendered in the fixed top header and resolve navigation through `/api/navigation`
 - Selected HTML pages are served through `/book/<path>`
 
 ## Використання

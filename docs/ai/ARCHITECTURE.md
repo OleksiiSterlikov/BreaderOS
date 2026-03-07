@@ -86,9 +86,9 @@ Flask відповідає за:
 Інтерфейс складається з:
 
 - fixed header
+- кнопки `Попередня/Наступна` в fixed header
 - sidebar з деревом книг
 - viewer на базі `iframe`
-- окрема fixed navigation bar над footer поза межами `iframe`
 - footer
 
 ---
