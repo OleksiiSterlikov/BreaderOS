@@ -29,6 +29,29 @@ python app.py
 http://127.0.0.1:5000
 ```
 
+Рекомендований стабільний запуск:
+
+```bash
+source .venv/bin/activate
+APP_DEBUG=0 APP_USE_RELOADER=0 APP_USE_DEBUGGER=0 python app.py
+```
+
+Підтримувані env-параметри локального запуску:
+
+```bash
+APP_HOST=127.0.0.1
+APP_PORT=5000
+APP_DEBUG=0
+APP_USE_RELOADER=0
+APP_USE_DEBUGGER=0
+```
+
+`app.py` тепер містить `create_app()`, який можна використовувати для:
+
+- тестів
+- WSGI runtime
+- майбутнього винесення конфігурації запуску в окремі профілі
+
 ---
 
 ## Docker-запуск
@@ -48,7 +71,7 @@ http://127.0.0.1
 
 ## Структура коду
 
-- `app.py` - створення Flask app і реєстрація blueprint
+- `app.py` - `create_app()`, реєстрація blueprint і локальний dev entrypoint
 - `routes/main.py` - HTTP endpoints
 - `services/fswalker.py` - робота з файловою системою книг
 - `templates/` - Jinja templates
@@ -103,13 +126,19 @@ python -m unittest discover -s tests -v
 
 Поточний локальний запуск використовує:
 
-- `debug=True` у `app.py` при запуску напряму
+- керовані env-параметри для `debug`, `reloader` і `debugger`
 
 Для налагодження достатньо:
 
 - Flask traceback
 - локальних перевірок через test client
 - помірного логування без виводу великих списків у консоль
+
+Для стабільної роботи в обмежених середовищах варто тримати:
+
+- `APP_DEBUG=0`
+- `APP_USE_RELOADER=0`
+- `APP_USE_DEBUGGER=0`
 
 ---
 

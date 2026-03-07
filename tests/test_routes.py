@@ -2,7 +2,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from app import app
+from app import create_app
 from services import fswalker
 
 
@@ -22,6 +22,7 @@ class RoutesTestCase(unittest.TestCase):
         (sample_dir / "note.txt").write_text("ignore", encoding="utf-8")
 
         fswalker.BOOKS_ROOT = str(cls.books_root)
+        app = create_app()
         app.config["TESTING"] = True
         cls.client = app.test_client()
 

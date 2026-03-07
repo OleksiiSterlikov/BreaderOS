@@ -50,6 +50,16 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
+Optional local run parameters:
+
+```bash
+APP_HOST=127.0.0.1
+APP_PORT=5000
+APP_DEBUG=0
+APP_USE_RELOADER=0
+APP_USE_DEBUGGER=0
+```
+
 ### Docker
 
 ```bash
@@ -70,11 +80,20 @@ source .venv/bin/activate
 python app.py
 ```
 
+Recommended stable local run:
+
+```bash
+source .venv/bin/activate
+APP_DEBUG=0 APP_USE_RELOADER=0 APP_USE_DEBUGGER=0 python app.py
+```
+
 Open:
 
 ```text
 http://127.0.0.1:5000
 ```
+
+The application entrypoint exposes `create_app()` for tests and WSGI runtimes such as `gunicorn`.
 
 ## Usage
 

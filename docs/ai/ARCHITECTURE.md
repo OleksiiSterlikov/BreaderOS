@@ -26,7 +26,7 @@ Flask відповідає за:
 
 Основні точки входу:
 
-- `app.py` - створення Flask app і реєстрація blueprint
+- `app.py` - `create_app()`, реєстрація blueprint і локальний dev entrypoint
 - `routes/main.py` - HTTP-маршрути
 - `services/fswalker.py` - робота з файловою системою книг
 
