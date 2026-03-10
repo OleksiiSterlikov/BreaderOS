@@ -1,8 +1,18 @@
 {% extends "base.html" %}
 {% block content %}
-        <div id="main">
-            <div class="sidebar">
-                <ul>
+    <div id="main">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div>
+                    <h1 class="sidebar-title">Каталог книг</h1>
+                    <p class="sidebar-subtitle">Швидка навігація по локальній бібліотеці з lazy loading папок.</p>
+                </div>
+                <button id="sidebar-close" class="icon-button" type="button" aria-label="Закрити бібліотеку">
+                    ✕
+                </button>
+            </div>
+            <div class="tree-scroll">
+                <ul class="tree-root">
                     {% for item in tree %}
                         {% with item=item %}
                             {% include "tree_node.html" %}
@@ -10,12 +20,28 @@
                     {% endfor %}
                 </ul>
             </div>
-            <div id="viewer-panel">
-                <div id="viewer-toolbar">
-                    <button id="nav-prev" disabled>⬅ Попередня</button>
-                    <button id="nav-next" disabled>Наступна ➡</button>
+        </aside>
+
+        <section id="viewer-panel">
+            <div id="viewer-toolbar">
+                <div class="viewer-copy">
+                    <h2 class="viewer-title">Reader</h2>
+                    <p class="viewer-subtitle">Вміст відкривається у безпечному iframe, навігація працює по HTML-сторінках.</p>
                 </div>
-                <iframe id="viewer" allow="autoplay; encrypted-media; fullscreen" allowfullscreen></iframe>
+                <div class="viewer-actions">
+                    <button id="nav-prev" class="nav-button" type="button" disabled>← Попередня</button>
+                    <button id="nav-next" class="nav-button" type="button" disabled>Наступна →</button>
+                </div>
             </div>
-        </div>
+            <div class="viewer-stage">
+                <div id="viewer-empty" class="viewer-empty-state">
+                    <div class="empty-card">
+                        <h2>Виберіть матеріал</h2>
+                        <p>Відкрийте розділ у боковій панелі, щоб завантажити HTML-сторінку книги та перейти в режим читання.</p>
+                    </div>
+                </div>
+                <iframe id="viewer" allow="autoplay; encrypted-media; fullscreen" allowfullscreen title="Book viewer"></iframe>
+            </div>
+        </section>
+    </div>
 {% endblock %}

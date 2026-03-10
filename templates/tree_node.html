@@ -1,14 +1,14 @@
-<li>
+<li class="tree-node">
     {% if item.is_dir %}
-        <div class="folder" data-path="{{ item.fullpath }}">
-            📁 {{ item.name }}
-        </div>
-
+        <button class="tree-item folder" type="button" data-path="{{ item.fullpath }}">
+            <span class="tree-icon" aria-hidden="true">▸</span>
+            <span class="tree-label">{{ item.name }}</span>
+        </button>
         <ul class="hidden"></ul>
     {% else %}
-        <div class="file"
-             data-path="{{ item.fullpath }}">
-            📄 {{ item.name }}
-        </div>
+        <button class="tree-item file" type="button" data-path="{{ item.fullpath }}">
+            <span class="tree-icon" aria-hidden="true">•</span>
+            <span class="tree-label">{{ item.name }}</span>
+        </button>
     {% endif %}
 </li>

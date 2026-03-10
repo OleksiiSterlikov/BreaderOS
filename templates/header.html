@@ -1,14 +1,24 @@
-<nav class="navbar bg-body-tertiary">
-    <div class="container-fluid">
-
-        <div id="top-header">
-            <div id="breadcrumbs">Виберіть книгу…</div>
-            <div id="font-controls">
-                <button id="font-dec">A-</button>
-                <button id="font-inc">A+</button>
+<header>
+    <div id="top-header">
+        <div class="brand-block">
+            <button id="sidebar-toggle" class="icon-button" type="button" aria-label="Відкрити бібліотеку">
+                ☰
+            </button>
+            <div class="brand-mark" aria-hidden="true">B</div>
+            <div class="brand-copy">
+                <div class="brand-title">BreaderOS Library</div>
+                <div class="brand-subtitle">Offline-friendly knowledge shelf</div>
             </div>
-            <div id="theme-toggle">🌙</div>
         </div>
 
+        <div id="breadcrumbs">Виберіть книгу або розділ у бібліотеці</div>
+
+        <div class="toolbar-actions">
+            <div class="control-group" id="font-controls" aria-label="Керування шрифтом">
+                <button id="font-dec" class="font-button" type="button">A-</button>
+                <button id="font-inc" class="font-button" type="button">A+</button>
+            </div>
+            <button id="theme-toggle" class="icon-button" type="button" aria-label="Перемкнути тему">◐</button>
+        </div>
     </div>
-</nav>
+</header>
