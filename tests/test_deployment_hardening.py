@@ -17,9 +17,9 @@ class DeploymentHardeningTestCase(unittest.TestCase):
         self.assertNotIn("- .:/app:ro", compose)
         self.assertNotIn("- ./static:/app/static", compose)
         self.assertIn("${BOOKS_HOST_PATH:-./static/books}:/opt/breaderos/static/books:rw", compose)
+        self.assertNotIn("${BOOKS_HOST_PATH:-./static/books}:/opt/breaderos/static/books:ro", compose)
         self.assertIn("./static/css:/srv/static/css:ro", compose)
         self.assertIn("./static/js:/srv/static/js:ro", compose)
-        self.assertIn("${BOOKS_HOST_PATH:-./static/books}:/opt/breaderos/static/books:ro", compose)
         self.assertGreaterEqual(compose.count("read_only: true"), 2)
         self.assertGreaterEqual(compose.count("no-new-privileges:true"), 2)
 
@@ -28,7 +28,8 @@ class DeploymentHardeningTestCase(unittest.TestCase):
         gunicorn_conf = read_text("gunicorn.conf.py")
 
         self.assertIn("alias /srv/static/;", nginx_conf)
-        self.assertIn("alias /opt/breaderos/static/books/;", nginx_conf)
+        self.assertNotIn("alias /opt/breaderos/static/books/;", nginx_conf)
+        self.assertNotIn("location /books/", nginx_conf)
         self.assertIn('worker_tmp_dir = "/tmp"', gunicorn_conf)
 
 

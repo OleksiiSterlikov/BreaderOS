@@ -24,7 +24,6 @@ services:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./static/css:/srv/static/css:ro
       - ./static/js:/srv/static/js:ro
-      - ${BOOKS_HOST_PATH:-./static/books}:/opt/breaderos/static/books:ro
 
     depends_on:
       - app

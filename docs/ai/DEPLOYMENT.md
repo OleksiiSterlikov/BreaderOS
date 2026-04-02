@@ -26,7 +26,7 @@
 - використовує `nginx:1.25-alpine`
 - публікує порт `80:80`
 - проксіює запити на `app:5000`
-- отримує лише `nginx.conf`, `static/css`, `static/js` і каталог книг
+- отримує лише `nginx.conf`, `static/css` і `static/js`
 - працює з `read_only: true`, `tmpfs` для runtime-директорій і `no-new-privileges`
 
 ---
@@ -75,7 +75,6 @@ restart: unless-stopped
 - `${BOOKS_HOST_PATH:-./static/books}:/opt/breaderos/static/books:rw` для `app`
 - `./static/css:/srv/static/css:ro`
 - `./static/js:/srv/static/js:ro`
-- `${BOOKS_HOST_PATH:-./static/books}:/opt/breaderos/static/books:ro` для `nginx`
 
 Це означає, що весь репозиторій більше не монтується у runtime-контейнери. `app` бачить лише книги, а `nginx` — лише мінімальний набір static/config файлів.
 
@@ -108,6 +107,5 @@ docker compose up -d
 Поточна конфігурація `nginx`:
 
 - віддає `/static/` напряму з окремого mount point `/srv/static`
-- може віддавати `/books/` з окремого read-only mount каталогу книг
-- проксіює інші запити в `gunicorn`
+- проксіює `/books/...` і всі інші не-static запити в `gunicorn`
 - працює як публічний HTTP endpoint

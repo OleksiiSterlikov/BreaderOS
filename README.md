@@ -129,6 +129,7 @@ The application entrypoint exposes `create_app()` for tests and WSGI runtimes su
 - The page index for previous/next navigation is loaded on demand through `/api/pages`
 - Previous/next buttons are rendered in a dedicated toolbar above the viewer and resolve navigation through `/api/navigation`
 - Selected HTML pages are served through `/book/<path>`
+- Legacy `/books/<path>` requests stay supported, but are handled by the same safe Flask route instead of direct nginx file exposure
 
 ## Використання
 

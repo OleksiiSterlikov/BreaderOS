@@ -90,8 +90,21 @@ class RoutesTestCase(unittest.TestCase):
         self.assertIn(b"Sample page", response.data)
         response.close()
 
+    def test_books_compat_serves_html_file(self):
+        response = self.client.get("/books/Sample%20Book/Chapter%201/page1.html")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(b"Sample page", response.data)
+        response.close()
+
     def test_book_blocks_traversal(self):
         response = self.client.get("/book/../app.py")
+
+        self.assertEqual(response.status_code, 403)
+        response.close()
+
+    def test_books_compat_blocks_traversal(self):
+        response = self.client.get("/books/../app.py")
 
         self.assertEqual(response.status_code, 403)
         response.close()

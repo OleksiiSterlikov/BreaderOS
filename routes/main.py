@@ -41,8 +41,7 @@ def api_navigation():
     return jsonify(navigation)
 
 
-@bp.route("/book/<path:rel_path>")
-def serve_book(rel_path):
+def _serve_book_file(rel_path):
     try:
         abs_path = resolve_books_path(rel_path)
     except ValueError:
@@ -52,3 +51,13 @@ def serve_book(rel_path):
         return abort(404)
 
     return send_file(abs_path)
+
+
+@bp.route("/book/<path:rel_path>")
+def serve_book(rel_path):
+    return _serve_book_file(rel_path)
+
+
+@bp.route("/books/<path:rel_path>")
+def serve_book_compat(rel_path):
+    return _serve_book_file(rel_path)
