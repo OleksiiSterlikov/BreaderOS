@@ -30,6 +30,8 @@ Flask відповідає за:
 - `routes/main.py` - HTTP-маршрути
 - `services/fswalker.py` - робота з файловою системою книг
 
+- `services/book_names.py` - runtime normalization of book/file names for Windows/Linux compatibility
+
 ---
 
 ## Runtime stack
@@ -67,6 +69,8 @@ Flask відповідає за:
 
 ---
 
+`services/book_names.py` automatically trims surrounding spaces from newly discovered book paths before the tree, page index, and viewer routes use them.
+
 ## Book format
 
 Підтримуваний контент:
@@ -97,12 +101,14 @@ Flask відповідає за:
 
 Статичні файли застосунку:
 
-- `/app/static`
+- `/app/static` (запікається в image застосунку)
 
 Книги:
 
-- локально: `<repo>/static/books`
-- у контейнері: `/app/static/books` через `BOOKS_ROOT` або робочу директорію контейнера
+- локально: `<repo>/static/books` або інший host path через `BOOKS_HOST_PATH`
+- у контейнері: `/opt/breaderos/static/books` через `BOOKS_ROOT`
+
+У compose runtime більше не монтується весь репозиторій у `app` та `nginx`; контейнери отримують лише каталог книг і мінімально потрібні static/config файли.
 
 ---
 

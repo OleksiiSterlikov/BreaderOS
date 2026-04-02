@@ -1,81 +1,12 @@
 import argparse
-from dataclasses import dataclass
 from pathlib import Path
 
-
-@dataclass(frozen=True)
-class RenamePlan:
-    source: Path
-    destination: Path
-
-
-@dataclass(frozen=True)
-class Collision:
-    parent: Path
-    normalized_name: str
-    sources: tuple[Path, ...]
-
-
-@dataclass(frozen=True)
-class AuditReport:
-    rename_plans: tuple[RenamePlan, ...]
-    collisions: tuple[Collision, ...]
-
-
-def normalize_name(name: str) -> str:
-    return name.strip()
-
-
-def analyze_book_names(books_root: str | Path = "static/books") -> AuditReport:
-    root = Path(books_root).resolve()
-    if not root.exists():
-        raise FileNotFoundError(f"books root does not exist: {root}")
-
-    entries = sorted(
-        (path for path in root.rglob("*")),
-        key=lambda path: (len(path.relative_to(root).parts), str(path)),
-    )
-
-    rename_plans: list[RenamePlan] = []
-    collisions: list[Collision] = []
-    sibling_map: dict[Path, dict[str, list[Path]]] = {}
-
-    for path in entries:
-        parent = path.parent.resolve()
-        sibling_map.setdefault(parent, {})
-        normalized_name = normalize_name(path.name)
-        sibling_map[parent].setdefault(normalized_name, []).append(path.resolve())
-
-        if normalized_name != path.name:
-            rename_plans.append(RenamePlan(source=path.resolve(), destination=(path.parent / normalized_name).resolve()))
-
-    for parent, grouped in sibling_map.items():
-        for normalized_name, sources in grouped.items():
-            if len(sources) > 1:
-                collisions.append(
-                    Collision(
-                        parent=parent,
-                        normalized_name=normalized_name,
-                        sources=tuple(sorted(sources)),
-                    )
-                )
-
-    rename_plans.sort(key=lambda plan: len(plan.source.relative_to(root).parts), reverse=True)
-    collisions.sort(key=lambda collision: (str(collision.parent), collision.normalized_name))
-    return AuditReport(rename_plans=tuple(rename_plans), collisions=tuple(collisions))
-
-
-def apply_rename_plan(report: AuditReport) -> int:
-    if report.collisions:
-        raise RuntimeError("cannot apply normalization while name collisions exist")
-
-    renamed = 0
-    for plan in report.rename_plans:
-        if not plan.source.exists():
-            continue
-        plan.source.rename(plan.destination)
-        renamed += 1
-    return renamed
+from services.book_names import (
+    AuditReport,
+    analyze_book_names,
+    apply_rename_plan,
+    normalize_name,
+)
 
 
 def format_report(report: AuditReport, root: Path) -> str:

@@ -13,16 +13,16 @@ class RoutesTestCase(unittest.TestCase):
         cls.books_root = Path(cls._temp_dir.name)
         cls.original_books_root = fswalker.BOOKS_ROOT
 
-        sample_dir = cls.books_root / "Sample Book" / "Chapter 1"
+        sample_dir = cls.books_root / " Sample Book" / " Chapter 1"
         sample_dir.mkdir(parents=True, exist_ok=True)
-        (sample_dir / "page1.html").write_text(
+        (sample_dir / " page1.html").write_text(
             "<html><body><h1>Sample page</h1></body></html>",
             encoding="utf-8",
         )
-        (sample_dir / "note.txt").write_text("ignore", encoding="utf-8")
-        chapter_two = cls.books_root / "Sample Book" / "Chapter 2"
+        (sample_dir / " note.txt").write_text("ignore", encoding="utf-8")
+        chapter_two = cls.books_root / " Sample Book" / " Chapter 2"
         chapter_two.mkdir(parents=True, exist_ok=True)
-        (chapter_two / "page2.html").write_text(
+        (chapter_two / " page2.html").write_text(
             "<html><body><h1>Next page</h1></body></html>",
             encoding="utf-8",
         )
@@ -54,6 +54,8 @@ class RoutesTestCase(unittest.TestCase):
         payload = response.get_json()
         self.assertEqual(payload[0]["name"], "Sample Book")
         self.assertTrue(payload[0]["is_dir"])
+        self.assertFalse((self.books_root / " Sample Book").exists())
+        self.assertTrue((self.books_root / "Sample Book").exists())
 
     def test_api_folder_blocks_traversal(self):
         response = self.client.get("/api/folder?path=..")

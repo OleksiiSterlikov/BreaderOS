@@ -47,7 +47,9 @@ APP_USE_DEBUGGER=0
 BOOKS_ROOT=static/books
 ```
 
-Файл `.env.example` містить еталонний набір підтримуваних змінних оточення.
+Runtime access to `BOOKS_ROOT` automatically trims surrounding spaces in book file and directory names so the same library stays usable on both Windows and Linux hosts.
+
+Файл `.env.example` містить еталонний набір підтримуваних змінних оточення, включно з `BOOKS_HOST_PATH` для compose-розгортання.
 
 За замовчуванням локальний запуск читає книги з `static/books` відносно кореня репозиторію.
 Для нестандартного каталогу можна перевизначити `BOOKS_ROOT`.
@@ -101,6 +103,8 @@ GUNICORN_GRACEFUL_TIMEOUT=30
 - `tools/audit_book_names.py` - dry-run аудит і нормалізація "брудних" імен у `static/books`
 
 ---
+
+`services/book_names.py` is the shared normalization layer used by runtime scans and the CLI import/audit tools.
 
 ## Frontend
 
@@ -183,6 +187,8 @@ python tools/import_book.py /path/to/book-directory --target-subdir "Networking/
 ```bash
 python tools/import_book.py /path/to/book-directory --replace
 ```
+
+Imported trees are normalized automatically after copy. If normalization would create sibling-name collisions, the import is aborted and the copied destination is removed.
 
 ---
 

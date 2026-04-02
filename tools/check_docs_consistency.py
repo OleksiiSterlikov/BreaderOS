@@ -57,6 +57,25 @@ def run_checks() -> list[str]:
         if "безпеч" not in architecture.lower() and "безпеч" not in development.lower():
             errors.append("Documentation does not describe safe book route handling.")
 
+    if "/opt/breaderos/static/books" in compose:
+        for doc_name, doc_text in {
+            "README.md": readme,
+            "ARCHITECTURE.md": architecture,
+            "DEPLOYMENT.md": deployment,
+            "SECURITY.md": security,
+        }.items():
+            if "/opt/breaderos/static/books" not in doc_text:
+                errors.append(f"{doc_name} does not mention the current container books path /opt/breaderos/static/books.")
+
+    if "BOOKS_HOST_PATH" in compose:
+        for doc_name, doc_text in {
+            "README.md": readme,
+            "DEPLOYMENT.md": deployment,
+            "DEVELOPMENT.md": development,
+        }.items():
+            if "BOOKS_HOST_PATH" not in doc_text:
+                errors.append(f"{doc_name} does not mention BOOKS_HOST_PATH even though docker-compose uses it.")
+
     if "http://127.0.0.1" not in readme or "http://127.0.0.1:5000" not in readme:
         errors.append("README.md must describe both compose and direct local addresses.")
 

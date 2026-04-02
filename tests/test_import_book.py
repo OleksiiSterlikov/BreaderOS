@@ -9,12 +9,12 @@ class ImportBookTestCase(unittest.TestCase):
     def setUp(self):
         self.temp_dir = tempfile.TemporaryDirectory()
         self.base = Path(self.temp_dir.name)
-        self.source = self.base / "source-book"
+        self.source = self.base / " source-book"
         self.books_root = self.base / "books-root"
 
-        chapter = self.source / "Chapter 1"
+        chapter = self.source / " Chapter 1"
         chapter.mkdir(parents=True, exist_ok=True)
-        (chapter / "page1.html").write_text("<html>book</html>", encoding="utf-8")
+        (chapter / " page1.html").write_text("<html>book</html>", encoding="utf-8")
 
     def tearDown(self):
         self.temp_dir.cleanup()
@@ -23,6 +23,7 @@ class ImportBookTestCase(unittest.TestCase):
         destination = import_book(self.source, self.books_root)
 
         self.assertTrue(destination.exists())
+        self.assertEqual(destination, self.books_root / "source-book")
         self.assertTrue((destination / "Chapter 1" / "page1.html").exists())
 
     def test_import_book_supports_target_subdir(self):
@@ -53,6 +54,17 @@ class ImportBookTestCase(unittest.TestCase):
     def test_import_book_rejects_unsafe_target_subdir(self):
         with self.assertRaises(ValueError):
             import_book(self.source, self.books_root, target_subdir="../unsafe")
+
+    def test_import_book_rejects_collisions_after_normalization(self):
+        collision_dir = self.source / "Chapter 2"
+        collision_dir.mkdir(parents=True, exist_ok=True)
+        (collision_dir / "page2.html").write_text("<html>ok</html>", encoding="utf-8")
+        (self.source / " Chapter 2").mkdir(parents=True, exist_ok=True)
+
+        with self.assertRaises(RuntimeError):
+            import_book(self.source, self.books_root)
+
+        self.assertFalse((self.books_root / "source-book").exists())
 
 
 if __name__ == "__main__":

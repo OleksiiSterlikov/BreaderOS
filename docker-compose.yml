@@ -1,15 +1,18 @@
-version: "3.9"
-
 services:
   app:
     container_name: breaderos_app
     build: .
+    environment:
+      BOOKS_ROOT: /opt/breaderos/static/books
     expose:
       - "5000"
     volumes:
-      - .:/app
-      - ./static:/app/static
-#      - ./static/books:/app/static/books
+      - ${BOOKS_HOST_PATH:-./static/books}:/opt/breaderos/static/books:rw
+    read_only: true
+    tmpfs:
+      - /tmp
+    security_opt:
+      - no-new-privileges:true
     restart: unless-stopped
 
   nginx:
@@ -19,8 +22,17 @@ services:
       - "80:80"
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-      - .:/app:ro
+      - ./static/css:/srv/static/css:ro
+      - ./static/js:/srv/static/js:ro
+      - ${BOOKS_HOST_PATH:-./static/books}:/opt/breaderos/static/books:ro
 
     depends_on:
       - app
+    read_only: true
+    tmpfs:
+      - /var/cache/nginx
+      - /var/run
+      - /tmp
+    security_opt:
+      - no-new-privileges:true
     restart: unless-stopped

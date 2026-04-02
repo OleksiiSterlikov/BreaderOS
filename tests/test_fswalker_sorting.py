@@ -12,21 +12,21 @@ class FswalkerSortingTestCase(unittest.TestCase):
         self.original_books_root = fswalker.BOOKS_ROOT
         fswalker.BOOKS_ROOT = self.books_root
 
-        chapter_root = self.books_root / "Introduction to Networks v6 (ITN) Extended Ru" / "Глава 0. Знакомство с курсом"
+        chapter_root = self.books_root / "Networking Course" / "Chapter 0 Intro"
         chapter_root.mkdir(parents=True, exist_ok=True)
 
         ordered_dirs = [
-            "0.0.1.1 Добро пожаловать!",
-            " 0.0.1.2 Мировое сообщество ",
-            " 0.0.1.3 Больше чем просто информация ",
-            " 0.0.1.4 Методика преподавания ",
-            " 0.0.1.5 Освоение практический опыт ",
-            " 0.0.1.6 Открытость новым знаниям ",
-            " 0.0.1.7 Инженерно-технические журналы ",
-            "0.0.1.8 Изучение мировых технологий",
-            "0.0.1.9 Создание собственного сетевого мира",
-            "0.0.1.10 Packet Tracer помогает понять принципы",
-            "0.0.1.11 Обзор курса",
+            "0.0.1.1 Welcome",
+            " 0.0.1.2 Global Community",
+            " 0.0.1.3 More Than Information",
+            " 0.0.1.4 Teaching Approach",
+            " 0.0.1.5 Practical Experience",
+            " 0.0.1.6 Openness To Learning",
+            " 0.0.1.7 Engineering Journals",
+            "0.0.1.8 Learning Global Technology",
+            "0.0.1.9 Building Your Own Network World",
+            "0.0.1.10 Packet Tracer Overview",
+            "0.0.1.11 Course Summary",
         ]
 
         for index, directory in enumerate(ordered_dirs, start=1):
@@ -39,8 +39,8 @@ class FswalkerSortingTestCase(unittest.TestCase):
         fswalker.BOOKS_ROOT = self.original_books_root
         self.temp_dir.cleanup()
 
-    def test_list_folder_uses_natural_sort_even_with_wrapped_spaces(self):
-        items = fswalker.list_folder("Introduction to Networks v6 (ITN) Extended Ru/Глава 0. Знакомство с курсом")
+    def test_list_folder_uses_natural_sort_even_with_leading_spaces(self):
+        items = fswalker.list_folder("Networking Course/Chapter 0 Intro")
         names = [item["name"].strip().split(" ", 1)[0] for item in items]
 
         self.assertEqual(

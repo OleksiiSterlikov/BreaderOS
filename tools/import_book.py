@@ -2,16 +2,27 @@ import argparse
 import shutil
 from pathlib import Path
 
+from services.book_names import normalize_book_names, normalize_name
+
 
 def validate_relative_subdir(value: str | None) -> Path:
     if not value:
         return Path()
 
     path = Path(value)
-    if path.is_absolute() or ".." in path.parts:
+    if path.is_absolute():
         raise ValueError("target subdir must be a safe relative path")
 
-    return path
+    normalized_parts: list[str] = []
+    for part in path.parts:
+        normalized_part = normalize_name(part)
+        if normalized_part in {"", "."}:
+            raise ValueError("target subdir must not contain empty path segments")
+        if normalized_part == "..":
+            raise ValueError("target subdir must be a safe relative path")
+        normalized_parts.append(normalized_part)
+
+    return Path(*normalized_parts)
 
 
 def import_book(
@@ -27,9 +38,13 @@ def import_book(
     if not source_path.exists() or not source_path.is_dir():
         raise FileNotFoundError(f"source directory does not exist: {source_path}")
 
+    normalized_source_name = normalize_name(source_path.name)
+    if not normalized_source_name:
+        raise ValueError("source directory name becomes empty after normalization")
+
     destination_parent = books_root_path / relative_subdir
     destination_parent.mkdir(parents=True, exist_ok=True)
-    destination = destination_parent / source_path.name
+    destination = destination_parent / normalized_source_name
 
     if destination.exists():
         if not replace:
@@ -37,6 +52,12 @@ def import_book(
         shutil.rmtree(destination)
 
     shutil.copytree(source_path, destination)
+    normalization_result = normalize_book_names(destination)
+
+    if normalization_result.report.collisions:
+        shutil.rmtree(destination)
+        raise RuntimeError("imported book contains name collisions after normalization")
+
     return destination
 
 

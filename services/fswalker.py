@@ -2,6 +2,8 @@ import os
 import re
 from pathlib import Path, PurePosixPath
 
+from services.book_names import ensure_book_names_normalized
+
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 
 
@@ -14,8 +16,10 @@ def default_books_root() -> Path:
 
 BOOKS_ROOT = default_books_root()
 
-def resolve_books_path(relative_path: str) -> str:
+
+def resolve_books_path(relative_path: str) -> Path:
     """Resolve a path under BOOKS_ROOT and reject traversal outside it."""
+    ensure_book_names_normalized(BOOKS_ROOT)
     root = Path(BOOKS_ROOT)
     root_path = root.resolve()
     abs_path = (root / relative_path).resolve()
@@ -70,6 +74,7 @@ def extract_all_pages(nodes):
     return pages
 
 def extract_all_pages_fs():
+    ensure_book_names_normalized(BOOKS_ROOT)
     pages = []
 
     for root, dirs, files in os.walk(BOOKS_ROOT):

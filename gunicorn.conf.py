@@ -16,3 +16,4 @@ graceful_timeout = env_int("GUNICORN_GRACEFUL_TIMEOUT", 30)
 accesslog = os.getenv("GUNICORN_ACCESSLOG", "-")
 errorlog = os.getenv("GUNICORN_ERRORLOG", "-")
 capture_output = True
+worker_tmp_dir = "/tmp"
